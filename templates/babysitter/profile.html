@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Babysitter - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <h5 class="mb-1">{{ session.user_name }}</h5>
+                        <span class="badge bg-success">Babysitter</span>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('babysitter_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('babysitter_profile_edit') }}">
+                            <i class="bi bi-person-circle"></i>My Profile
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_verification') }}">
+                            <i class="bi bi-shield-check"></i>Verification
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_availability') }}">
+                            <i class="bi bi-calendar-week"></i>Availability
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>Bookings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_earnings') }}">
+                            <i class="bi bi-currency-rupee"></i>Earnings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_messages') }}">
+                            <i class="bi bi-chat-dots"></i>Messages
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_notifications') }}">
+                            <i class="bi bi-bell"></i>Notifications
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-person-circle me-2 text-success"></i>Edit Profile</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('babysitter_profile_edit') }}" enctype="multipart/form-data">
+                            <!-- Profile Image -->
+                            <div class="text-center mb-4">
+                                <img src="{{ url_for('static', filename='uploads/' + user.profile_image) if user.profile_image else 'https://via.placeholder.com/150' }}" 
+                                     alt="Profile" class="profile-img mb-3">
+                                <div>
+                                    <label class="btn btn-outline-success">
+                                        <i class="bi bi-camera me-2"></i>Change Photo
+                                        <input type="file" name="profile_image" class="d-none" accept="image/*">
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" name="full_name" class="form-control" value="{{ user.full_name }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" value="{{ user.email }}" disabled>
+                                    <small class="text-muted">Email cannot be changed</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="tel" name="phone" class="form-control" value="{{ user.phone }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">City *</label>
+                                    <select name="city" class="form-select" required>
+                                        <option value="">Select City</option>
+                                        {% for city in ['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Gujranwala', 'Multan', 'Peshawar', 'Quetta', 'Other'] %}
+                                            <option value="{{ city }}" {{ 'selected' if user.city == city else '' }}>{{ city }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea name="address" class="form-control" rows="2">{{ user.address or '' }}</textarea>
+                            </div>
+                            
+                            <hr class="my-4">
+                            <h6 class="mb-3"><i class="bi bi-person-vcard me-2 text-success"></i>Personal Information</h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" name="date_of_birth" class="form-control" 
+                                           value="{{ user.date_of_birth.strftime('%Y-%m-%d') if user.date_of_birth else '' }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Gender</label>
+                                    <select name="gender" class="form-select">
+                                        <option value="">Select</option>
+                                        <option value="female" {{ 'selected' if user.gender == 'female' else '' }}>Female</option>
+                                        <option value="male" {{ 'selected' if user.gender == 'male' else '' }}>Male</option>
+                                        <option value="other" {{ 'selected' if user.gender == 'other' else '' }}>Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            <h6 class="mb-3"><i class="bi bi-briefcase me-2 text-success"></i>Professional Information</h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Hourly Rate (Rs.) *</label>
+                                    <input type="number" name="hourly_rate" class="form-control" 
+                                           value="{{ user.hourly_rate or 500 }}" min="300" max="2000" required>
+                                    <small class="text-muted">Suggested range: Rs. 300 - 2000</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Years of Experience</label>
+                                    <input type="number" name="years_of_experience" class="form-control" 
+                                           value="{{ user.years_of_experience or 0 }}" min="0">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">About Me</label>
+                                <textarea name="about_me" class="form-control" rows="4" 
+                                          placeholder="Tell parents about yourself, your experience, and your approach to childcare...">{{ user.about_me or '' }}</textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Education</label>
+                                <input type="text" name="education" class="form-control" 
+                                       value="{{ user.education or '' }}" placeholder="e.g., Bachelor's in Early Childhood Education">
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Languages Spoken</label>
+                                    <input type="text" name="languages" class="form-control" 
+                                           value="{{ user.languages or '' }}" placeholder="e.g., Urdu, English, Punjabi">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Special Skills</label>
+                                    <input type="text" name="special_skills" class="form-control" 
+                                           value="{{ user.special_skills or '' }}" placeholder="e.g., Cooking, Art, Music">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Certifications</label>
+                                <textarea name="certifications" class="form-control" rows="2" 
+                                          placeholder="List any relevant certifications...">{{ user.certifications or '' }}</textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="has_cpr" id="has_cpr" 
+                                           {{ 'checked' if user.has_cpr else '' }}>
+                                    <label class="form-check-label" for="has_cpr">
+                                        <i class="bi bi-heart-pulse me-1 text-danger"></i>I have CPR certification
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="has_first_aid" id="has_first_aid" 
+                                           {{ 'checked' if user.has_first_aid else '' }}>
+                                    <label class="form-check-label" for="has_first_aid">
+                                        <i class="bi bi-bandaid me-1 text-info"></i>I have First Aid certification
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle me-2"></i>Save Changes
+                                </button>
+                                <a href="{{ url_for('babysitter_dashboard') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    // Preview uploaded image
+    document.querySelector('input[name="profile_image"]').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('.profile-img').src = e.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

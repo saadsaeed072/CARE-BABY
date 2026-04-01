@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <div class="text-center mb-4">
+                        <div class="feature-icon mx-auto mb-3" style="width: 70px; height: 70px; font-size: 1.5rem;">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <h3 class="fw-bold">Create Account</h3>
+                        <p class="text-muted">Join BabyCare today</p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('register') }}">
+                        <!-- Account Type Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">I want to register as:</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="form-check card p-3 text-center">
+                                        <input class="form-check-input" type="radio" name="user_type" id="type_parent"
+                                            value="parent" checked>
+                                        <label class="form-check-label d-block" for="type_parent">
+                                            <i class="bi bi-people fs-3 d-block mb-2 text-primary"></i>
+                                            <strong>Parent</strong>
+                                            <small class="d-block text-muted">Find babysitters</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check card p-3 text-center">
+                                        <input class="form-check-input" type="radio" name="user_type"
+                                            id="type_babysitter" value="babysitter">
+                                        <label class="form-check-label d-block" for="type_babysitter">
+                                            <i class="bi bi-heart fs-3 d-block mb-2 text-success"></i>
+                                            <strong>Babysitter</strong>
+                                            <small class="d-block text-muted">Offer services</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Full Name *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="full_name" class="form-control"
+                                        placeholder="Your full name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email Address *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" class="form-control" placeholder="your@email.com"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" name="phone" class="form-control" placeholder="03XX-XXXXXXX"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                    <select name="city" class="form-select" required>
+                                        <option value="">Select City</option>
+                                        <option value="Karachi">Karachi</option>
+                                        <option value="Lahore">Lahore</option>
+                                        <option value="Islamabad">Islamabad</option>
+                                        <option value="Rawalpindi">Rawalpindi</option>
+                                        <option value="Faisalabad">Faisalabad</option>
+                                        <option value="Gujranwala">Gujranwala</option>
+                                        <option value="Multan">Multan</option>
+                                        <option value="Peshawar">Peshawar</option>
+                                        <option value="Quetta">Quetta</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Address*</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-house"></i></span>
+                                <textarea name="address" class="form-control" rows="2"
+                                    placeholder="Your complete address" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Password *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" class="form-control"
+                                        placeholder="Create password" required minlength="6">
+                                </div>
+                                <small class="text-muted">Minimum 6 characters</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Confirm Password *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" name="confirm_password" class="form-control"
+                                        placeholder="Confirm password" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#"
+                                        class="text-primary">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="bi bi-person-plus me-2"></i>Create Account
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <p class="mb-0">Already have an account? <a href="{{ url_for('login') }}"
+                                class="text-primary text-decoration-none fw-bold">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - {{ app_name }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Contact Us</h1>
+        <p class="lead">We'd love to hear from you. Get in touch with us today!</p>
+    </div>
+</section>
+
+<!-- Contact Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Contact Info Cards -->
+            <div class="col-lg-4">
+                <div class="card h-100 p-4">
+                    <h4 class="mb-4"><i class="bi bi-info-circle me-2 text-primary"></i>Get In Touch</h4>
+                    
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="feature-icon me-3" style="width: 50px; height: 50px; font-size: 1.2rem; min-width: 50px;">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Our Office</h6>
+                            <p class="text-muted mb-0 small">Karachi, Sindh, Pakistan</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="feature-icon me-3" style="width: 50px; height: 50px; font-size: 1.2rem; min-width: 50px; background: linear-gradient(135deg, #28a745, #34ce57);">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Phone</h6>
+                            <p class="text-muted mb-0 small">0300-1234567</p>
+                            <p class="text-muted mb-0 small">Mon - Sat, 9 AM - 6 PM</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="feature-icon me-3" style="width: 50px; height: 50px; font-size: 1.2rem; min-width: 50px; background: linear-gradient(135deg, #FF6B6B, #FF8E8E);">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Email</h6>
+                            <p class="text-muted mb-0 small">support@babycare.pk</p>
+                            <p class="text-muted mb-0 small">info@babycare.pk</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="feature-icon me-3" style="width: 50px; height: 50px; font-size: 1.2rem; min-width: 50px; background: linear-gradient(135deg, #FFE66D, #FFF3A3);">
+                            <i class="bi bi-whatsapp" style="color: #2C3E50;"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">WhatsApp</h6>
+                            <p class="text-muted mb-0 small">0300-1234567</p>
+                            <p class="text-muted mb-0 small">Quick Response</p>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <hr>
+                    <h6 class="mb-3">Follow Us</h6>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger btn-sm rounded-circle" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-info btn-sm rounded-circle" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-success btn-sm rounded-circle" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-8">
+                <div class="card p-4">
+                    <h4 class="mb-4"><i class="bi bi-send me-2 text-primary"></i>Send Us a Message</h4>
+                    <form method="POST" action="{{ url_for('contact') }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="contact_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control" id="contact_name" name="name" placeholder="Enter your full name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contact_email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control" id="contact_email" name="email" placeholder="Enter your email" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contact_phone" class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" class="form-control" id="contact_phone" name="phone" placeholder="e.g. 03001234567">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contact_subject" class="form-label">Subject <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                    <select class="form-select" id="contact_subject" name="subject" required>
+                                        <option value="" selected disabled>Select a subject</option>
+                                        <option value="General Inquiry">General Inquiry</option>
+                                        <option value="Booking Issue">Booking Issue</option>
+                                        <option value="Payment Problem">Payment Problem</option>
+                                        <option value="Account Issue">Account Issue</option>
+                                        <option value="Babysitter Complaint">Babysitter Complaint</option>
+                                        <option value="Verification Help">Verification Help</option>
+                                        <option value="Partnership">Partnership</option>
+                                        <option value="Feedback">Feedback</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label for="contact_message" class="form-label">Message <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="contact_message" name="message" rows="5" placeholder="Tell us how we can help you..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-send me-2"></i>Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2>Frequently Asked Questions</h2>
+            <p class="text-muted">Quick answers to common questions</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer1">
+                                How do I register as a babysitter?
+                            </button>
+                        </h2>
+                        <div id="faqAnswer1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Click "Register" on the top menu, select "Babysitter" as your account type, fill in your details and complete the CNIC verification process. Once approved by our admin team, your profile will be live.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer2">
+                                How are babysitters verified?
+                            </button>
+                        </h2>
+                        <div id="faqAnswer2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Every babysitter must submit front and back images of their CNIC. Our team verifies the documents and runs background checks before approving the profile.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer3">
+                                What payment methods are accepted?
+                            </button>
+                        </h2>
+                        <div id="faqAnswer3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                We support Bank Transfer, EasyPaisa, and JazzCash for both payments and babysitter withdrawals. Cash payments can also be arranged directly.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer4">
+                                Can I cancel a booking?
+                            </button>
+                        </h2>
+                        <div id="faqAnswer4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Yes, you can cancel a booking from your dashboard. We recommend cancelling at least 24 hours before the booking time. Late cancellations may affect your account standing.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq5">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer5">
+                                What is the platform fee?
+                            </button>
+                        </h2>
+                        <div id="faqAnswer5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                BabyCare charges a 10% platform fee on each booking. This covers payment processing, customer support, and platform maintenance.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="card p-5 text-center" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E); color: white;">
+            <h2 class="fw-bold mb-3">Still Have Questions?</h2>
+            <p class="lead mb-4">Our support team is available Mon-Sat, 9 AM to 6 PM</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="tel:03001234567" class="btn btn-light btn-lg">
+                    <i class="bi bi-telephone me-2"></i>Call Us
+                </a>
+                <a href="https://wa.me/923001234567" target="_blank" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Availability - Babysitter - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                            style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <h5 class="mb-1">{{ session.user_name }}</h5>
+                        <span class="badge bg-success">Babysitter</span>
+                    </div>
+
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('babysitter_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_profile_edit') }}">
+                            <i class="bi bi-person-circle"></i>My Profile
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_verification') }}">
+                            <i class="bi bi-shield-check"></i>Verification
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('babysitter_availability') }}">
+                            <i class="bi bi-calendar-week"></i>Availability
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>Bookings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_earnings') }}">
+                            <i class="bi bi-currency-rupee"></i>Earnings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_messages') }}">
+                            <i class="bi bi-chat-dots"></i>Messages
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_notifications') }}">
+                            <i class="bi bi-bell"></i>Notifications
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <h4 class="mb-4"><i class="bi bi-calendar-week me-2 text-success"></i>Manage Availability</h4>
+
+                <!-- Add Availability Form -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Add New Time Slot</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('babysitter_availability') }}">
+                            <input type="hidden" name="action" value="add">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Day of Week</label>
+                                    <select name="day_of_week" class="form-select" required>
+                                        {% for day in days %}
+                                        <option value="{{ loop.index0 }}">{{ day }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Start Time</label>
+                                    <input type="time" name="start_time" class="form-control" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">End Time</label>
+                                    <input type="time" name="end_time" class="form-control" required>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="bi bi-plus-lg"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Current Availability -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Your Weekly Schedule</h5>
+                        <span class="badge bg-success">{{ availability|length }} slots</span>
+                    </div>
+                    <div class="card-body">
+                        {% if availability %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for slot in availability %}
+                                    <tr>
+                                        <td>{{ days[slot.day_of_week] }}</td>
+                                        <td>{{ slot.formatted_start }}</td>
+                                        <td>{{ slot.formatted_end }}</td>
+                                        <td>
+                                            <form method="POST" action="{{ url_for('babysitter_availability') }}"
+                                                class="d-inline">
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="availability_id" value="{{ slot.id }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">No availability set yet</p>
+                            <p class="small text-muted">Add your available time slots above</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Blocked Dates -->
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Blocked Dates</h5>
+                        <span class="badge bg-danger">{{ blocked_dates|length }} dates</span>
+                    </div>
+                    <div class="card-body">
+                        {% if blocked_dates %}
+                        <div class="list-group">
+                            {% for date in blocked_dates %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-calendar-x text-danger me-2"></i>
+                                    {{ date.blocked_date.strftime('%d %B %Y') }}
+                                    {% if date.reason %}
+                                    <small class="text-muted">- {{ date.reason }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-calendar-check fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">No blocked dates</p>
+                            <p class="small text-muted">You can block dates when you're unavailable</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <h5 class="mb-1">{{ session.user_name }}</h5>
+                        <span class="badge bg-primary">Parent</span>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('parent_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('search') }}">
+                            <i class="bi bi-search"></i>Find Babysitters
+                        </a>
+                        <a class="nav-link" href="{{ url_for('parent_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>My Bookings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('parent_messages') }}">
+                            <i class="bi bi-chat-dots"></i>Messages
+                        </a>
+                        <a class="nav-link" href="{{ url_for('parent_notifications') }}">
+                            <i class="bi bi-bell"></i>Notifications
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('parent_profile') }}">
+                            <i class="bi bi-person-circle"></i>My Profile
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-person-circle me-2 text-primary"></i>Edit Profile</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('parent_profile') }}" enctype="multipart/form-data">
+                            <!-- Profile Image -->
+                            <div class="text-center mb-4">
+                                <img src="{{ url_for('static', filename='uploads/' + user.profile_image) if user.profile_image else 'https://via.placeholder.com/150' }}" 
+                                     alt="Profile" class="profile-img mb-3">
+                                <div>
+                                    <label class="btn btn-outline-primary">
+                                        <i class="bi bi-camera me-2"></i>Change Photo
+                                        <input type="file" name="profile_image" class="d-none" accept="image/*">
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" name="full_name" class="form-control" value="{{ user.full_name }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" value="{{ user.email }}" disabled>
+                                    <small class="text-muted">Email cannot be changed</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="tel" name="phone" class="form-control" value="{{ user.phone }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">City *</label>
+                                    <select name="city" class="form-select" required>
+                                        <option value="">Select City</option>
+                                        {% for city in ['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Gujranwala', 'Multan', 'Peshawar', 'Quetta', 'Other'] %}
+                                            <option value="{{ city }}" {{ 'selected' if user.city == city else '' }}>{{ city }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea name="address" class="form-control" rows="2">{{ user.address or '' }}</textarea>
+                            </div>
+                            
+                            <hr class="my-4">
+                            <h6 class="mb-3"><i class="bi bi-people me-2 text-primary"></i>Family Information</h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Family Name</label>
+                                    <input type="text" name="family_name" class="form-control" value="{{ user.family_name or '' }}" placeholder="e.g., The Khan Family">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Number of Children</label>
+                                    <input type="number" name="number_of_children" class="form-control" value="{{ user.number_of_children or '' }}" min="0">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Children's Ages</label>
+                                <input type="text" name="children_ages" class="form-control" value="{{ user.children_ages or '' }}" placeholder="e.g., 3, 5, 8">
+                                <small class="text-muted">Enter ages separated by commas</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Special Needs or Requirements</label>
+                                <textarea name="special_needs" class="form-control" rows="3" placeholder="Any allergies, medical conditions, or special care requirements..."></textarea>
+                            </div>
+                            
+                            <hr class="my-4">
+                            <h6 class="mb-3"><i class="bi bi-telephone-fill me-2 text-danger"></i>Emergency Contact</h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Emergency Contact Name</label>
+                                    <input type="text" name="emergency_contact_name" class="form-control" value="{{ user.emergency_contact_name or '' }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Emergency Contact Phone</label>
+                                    <input type="tel" name="emergency_contact_phone" class="form-control" value="{{ user.emergency_contact_phone or '' }}">
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>Save Changes
+                                </button>
+                                <a href="{{ url_for('parent_dashboard') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    // Preview uploaded image
+    document.querySelector('input[name="profile_image"]').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('.profile-img').src = e.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

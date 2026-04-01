@@ -1,0 +1,611 @@
+{% extends 'base.html' %}
+
+{% block title %}Help Center - {{ app_name }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Help Center</h1>
+        <p class="lead mb-4">Find answers, guides, and support for using BabyCare</p>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-start-0" id="helpSearch" placeholder="Search for help topics..." onkeyup="filterHelp()">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Help Categories -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 mb-5">
+            <div class="col-md-3 col-6">
+                <a href="#parents-section" class="text-decoration-none">
+                    <div class="card h-100 p-4 text-center help-card" style="transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;">
+                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h6 class="mb-1">For Parents</h6>
+                        <p class="text-muted small mb-0">Booking & managing care</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="#sitters-section" class="text-decoration-none">
+                    <div class="card h-100 p-4 text-center help-card" style="transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;">
+                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: linear-gradient(135deg, #FF6B6B, #FF8E8E);">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        <h6 class="mb-1">For Babysitters</h6>
+                        <p class="text-muted small mb-0">Profile & earnings help</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="#payments-section" class="text-decoration-none">
+                    <div class="card h-100 p-4 text-center help-card" style="transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;">
+                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: linear-gradient(135deg, #28a745, #34ce57);">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+                        <h6 class="mb-1">Payments</h6>
+                        <p class="text-muted small mb-0">Billing & withdrawals</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="#safety-section" class="text-decoration-none">
+                    <div class="card h-100 p-4 text-center help-card" style="transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;">
+                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; background: linear-gradient(135deg, #FFE66D, #FFF3A3);">
+                            <i class="bi bi-shield-check" style="color: #2C3E50;"></i>
+                        </div>
+                        <h6 class="mb-1">Safety & Trust</h6>
+                        <p class="text-muted small mb-0">Verification & security</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- For Parents Section -->
+<section class="py-4" id="parents-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="mb-4"><i class="bi bi-people me-2 text-primary"></i>For Parents</h3>
+                <div class="accordion help-accordion" id="parentAccordion">
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#parent1">
+                                How do I create a parent account?
+                            </button>
+                        </h2>
+                        <div id="parent1" class="accordion-collapse collapse" data-bs-parent="#parentAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Click <strong>"Register"</strong> in the top navigation menu.</li>
+                                    <li>Select <strong>"Parent"</strong> as your account type.</li>
+                                    <li>Fill in your full name, email, phone number, password, and city.</li>
+                                    <li>Click <strong>"Register"</strong> to create your account.</li>
+                                    <li>Login with your email and password to access your dashboard.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#parent2">
+                                How do I search and find a babysitter?
+                            </button>
+                        </h2>
+                        <div id="parent2" class="accordion-collapse collapse" data-bs-parent="#parentAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Click <strong>"Find Babysitters"</strong> in the navigation bar.</li>
+                                    <li>Use filters to search by <strong>city, hourly rate, experience level,</strong> and <strong>language</strong>.</li>
+                                    <li>Browse babysitter profiles to see ratings, reviews, and availability.</li>
+                                    <li>Click on a babysitter's profile for detailed information.</li>
+                                    <li>Only <strong>verified babysitters</strong> (with a green badge) appear in search results.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#parent3">
+                                How do I book a babysitter?
+                            </button>
+                        </h2>
+                        <div id="parent3" class="accordion-collapse collapse" data-bs-parent="#parentAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Visit the babysitter's profile and click <strong>"Book Now"</strong>.</li>
+                                    <li>Select a <strong>date, start time,</strong> and <strong>end time</strong>.</li>
+                                    <li>Enter the <strong>number of children</strong> and their ages.</li>
+                                    <li>Add any <strong>special instructions</strong> (allergies, routines, etc.).</li>
+                                    <li>Review the <strong>total cost</strong> and confirm the booking.</li>
+                                    <li>The babysitter will receive a notification and can accept or decline.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#parent4">
+                                How do I cancel a booking?
+                            </button>
+                        </h2>
+                        <div id="parent4" class="accordion-collapse collapse" data-bs-parent="#parentAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>To cancel a booking:</p>
+                                <ol>
+                                    <li>Go to <strong>Dashboard → My Bookings</strong>.</li>
+                                    <li>Find the booking you want to cancel.</li>
+                                    <li>Click the <strong>"Cancel"</strong> button.</li>
+                                    <li>Provide a reason for cancellation.</li>
+                                </ol>
+                                <div class="alert alert-warning mt-2 mb-0">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <strong>Note:</strong> We recommend cancelling at least 24 hours before the booking time. Frequent late cancellations may affect your account standing.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#parent5">
+                                How do I leave a review?
+                            </button>
+                        </h2>
+                        <div id="parent5" class="accordion-collapse collapse" data-bs-parent="#parentAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>After a booking is marked as <strong>completed</strong>:</p>
+                                <ol>
+                                    <li>Go to <strong>Dashboard → My Bookings</strong>.</li>
+                                    <li>Find the completed booking.</li>
+                                    <li>Click <strong>"Leave Review"</strong>.</li>
+                                    <li>Give a star rating (1-5) and write your feedback.</li>
+                                    <li>Your review helps other parents make informed decisions!</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#parent6">
+                                How do I message a babysitter?
+                            </button>
+                        </h2>
+                        <div id="parent6" class="accordion-collapse collapse" data-bs-parent="#parentAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Go to <strong>Dashboard → Messages</strong>.</li>
+                                    <li>Select an existing conversation or start a new one.</li>
+                                    <li>Type your message and click <strong>"Send"</strong>.</li>
+                                    <li>You'll receive notifications when the babysitter replies.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- For Babysitters Section -->
+<section class="py-4" id="sitters-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="mb-4"><i class="bi bi-person-badge me-2" style="color: #FF6B6B;"></i>For Babysitters</h3>
+                <div class="accordion help-accordion" id="sitterAccordion">
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sitter1">
+                                How do I register as a babysitter?
+                            </button>
+                        </h2>
+                        <div id="sitter1" class="accordion-collapse collapse" data-bs-parent="#sitterAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Click <strong>"Register"</strong> and select <strong>"Babysitter"</strong> as your account type.</li>
+                                    <li>Fill in your personal details and create a password.</li>
+                                    <li>After registration, complete your profile with experience, skills, and photo.</li>
+                                    <li>Submit your CNIC for verification (front and back images).</li>
+                                    <li>Wait for admin approval — you'll be notified once verified.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sitter2">
+                                How do I complete my profile?
+                            </button>
+                        </h2>
+                        <div id="sitter2" class="accordion-collapse collapse" data-bs-parent="#sitterAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>A complete profile attracts more parents. Make sure to add:</p>
+                                <ul>
+                                    <li><strong>Profile photo</strong> — A clear, professional photo.</li>
+                                    <li><strong>About Me</strong> — Describe your experience and childcare philosophy.</li>
+                                    <li><strong>Hourly rate</strong> — Set your rate (Rs. 300 - Rs. 2,000).</li>
+                                    <li><strong>Languages</strong> — List languages you speak (Urdu, English, etc.).</li>
+                                    <li><strong>Special skills</strong> — Cooking, tutoring, first aid, etc.</li>
+                                    <li><strong>Availability</strong> — Set your weekly schedule.</li>
+                                    <li><strong>Education & certifications</strong> — Highlight any qualifications.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sitter3">
+                                How do I manage booking requests?
+                            </button>
+                        </h2>
+                        <div id="sitter3" class="accordion-collapse collapse" data-bs-parent="#sitterAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>When a parent sends a booking request, you'll get a <strong>notification</strong>.</li>
+                                    <li>Go to <strong>Dashboard</strong> to see pending requests.</li>
+                                    <li>Review the booking details (date, time, number of children).</li>
+                                    <li>Click <strong>"Accept"</strong> to confirm or <strong>"Reject"</strong> to decline.</li>
+                                    <li>After completing the session, mark it as <strong>"Completed"</strong> to receive earnings.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sitter4">
+                                How do I set my availability?
+                            </button>
+                        </h2>
+                        <div id="sitter4" class="accordion-collapse collapse" data-bs-parent="#sitterAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Go to <strong>Dashboard → Availability</strong>.</li>
+                                    <li>Select a <strong>day of the week</strong>.</li>
+                                    <li>Set your <strong>start time and end time</strong> for that day.</li>
+                                    <li>Click <strong>"Add"</strong> to save the time slot.</li>
+                                    <li>You can add multiple time slots per day.</li>
+                                    <li>Use <strong>"Blocked Dates"</strong> to mark holidays or days off.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sitter5">
+                                How do I get verified?
+                            </button>
+                        </h2>
+                        <div id="sitter5" class="accordion-collapse collapse" data-bs-parent="#sitterAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Go to <strong>Dashboard → Verification</strong>.</li>
+                                    <li>Enter your <strong>CNIC number</strong>.</li>
+                                    <li>Upload clear photos of your <strong>CNIC front</strong> and <strong>CNIC back</strong>.</li>
+                                    <li>Click <strong>"Submit"</strong> to send for review.</li>
+                                    <li>Our team will verify your documents within <strong>24-48 hours</strong>.</li>
+                                    <li>You'll receive a notification once approved — then your profile goes live!</li>
+                                </ol>
+                                <div class="alert alert-info mt-2 mb-0">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Tip:</strong> Make sure your CNIC images are clear and readable for faster verification.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Payments Section -->
+<section class="py-4" id="payments-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="mb-4"><i class="bi bi-credit-card me-2 text-success"></i>Payments & Earnings</h3>
+                <div class="accordion help-accordion" id="paymentAccordion">
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pay1">
+                                How is the booking cost calculated?
+                            </button>
+                        </h2>
+                        <div id="pay1" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>The total booking cost is calculated as:</p>
+                                <div class="card p-3 bg-light">
+                                    <code>Total Cost = Hourly Rate × Number of Hours</code><br>
+                                    <code>Platform Fee = Total Cost × 10%</code><br>
+                                    <code>Babysitter Earnings = Total Cost - Platform Fee</code>
+                                </div>
+                                <p class="mt-3 mb-0">For example, if the hourly rate is Rs. 500 for 4 hours:<br>
+                                Total = Rs. 2,000 | Platform Fee = Rs. 200 | Babysitter receives = Rs. 1,800</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pay2">
+                                What is the platform fee?
+                            </button>
+                        </h2>
+                        <div id="pay2" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                            <div class="accordion-body text-muted">
+                                BabyCare charges a <strong>10% platform fee</strong> on each booking. This covers:
+                                <ul class="mt-2">
+                                    <li>Payment processing and security</li>
+                                    <li>24/7 customer support</li>
+                                    <li>Background verification of babysitters</li>
+                                    <li>Platform maintenance and improvements</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pay3">
+                                How do babysitters withdraw earnings?
+                            </button>
+                        </h2>
+                        <div id="pay3" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Go to <strong>Dashboard → Earnings</strong>.</li>
+                                    <li>Check your available balance.</li>
+                                    <li>Click <strong>"Request Withdrawal"</strong>.</li>
+                                    <li>Choose your payment method: <strong>Bank Transfer, EasyPaisa,</strong> or <strong>JazzCash</strong>.</li>
+                                    <li>Enter the amount (minimum Rs. 1,000).</li>
+                                    <li>Submit and wait for admin approval (typically 1-3 business days).</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pay4">
+                                What payment methods are supported?
+                            </button>
+                        </h2>
+                        <div id="pay4" class="accordion-collapse collapse" data-bs-parent="#paymentAccordion">
+                            <div class="accordion-body text-muted">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="card p-3 text-center h-100">
+                                            <i class="bi bi-bank fs-3 text-primary mb-2"></i>
+                                            <h6>Bank Transfer</h6>
+                                            <small class="text-muted">All major Pakistani banks</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card p-3 text-center h-100">
+                                            <i class="bi bi-phone fs-3 text-success mb-2"></i>
+                                            <h6>EasyPaisa</h6>
+                                            <small class="text-muted">Mobile wallet transfer</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card p-3 text-center h-100">
+                                            <i class="bi bi-phone fs-3 text-danger mb-2"></i>
+                                            <h6>JazzCash</h6>
+                                            <small class="text-muted">Mobile wallet transfer</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Safety Section -->
+<section class="py-4" id="safety-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="mb-4"><i class="bi bi-shield-check me-2" style="color: #FFD700;"></i>Safety & Trust</h3>
+                <div class="accordion help-accordion" id="safetyAccordion">
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#safe1">
+                                How does BabyCare verify babysitters?
+                            </button>
+                        </h2>
+                        <div id="safe1" class="accordion-collapse collapse" data-bs-parent="#safetyAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>Our verification process includes:</p>
+                                <ul>
+                                    <li><strong>CNIC Verification</strong> — Front and back of national ID are verified.</li>
+                                    <li><strong>Background Check</strong> — Our team reviews each applicant's background.</li>
+                                    <li><strong>Admin Approval</strong> — Only admin-approved profiles go live.</li>
+                                    <li><strong>Ongoing Monitoring</strong> — Reviews and ratings are monitored continuously.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#safe2">
+                                Is my personal information safe?
+                            </button>
+                        </h2>
+                        <div id="safe2" class="accordion-collapse collapse" data-bs-parent="#safetyAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>Yes! BabyCare takes data security seriously:</p>
+                                <ul>
+                                    <li>All passwords are <strong>hashed and encrypted</strong>.</li>
+                                    <li>Personal details are only shared with confirmed booking parties.</li>
+                                    <li>CNIC images are securely stored and only accessible by admins.</li>
+                                    <li>We never sell or share your data with third parties.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#safe3">
+                                How do I report a problem or safety concern?
+                            </button>
+                        </h2>
+                        <div id="safe3" class="accordion-collapse collapse" data-bs-parent="#safetyAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>If you have any safety concerns, please:</p>
+                                <ul>
+                                    <li>Visit our <a href="{{ url_for('contact') }}">Contact Page</a> and select <strong>"Babysitter Complaint"</strong> as the subject.</li>
+                                    <li>Call our support line at <strong>0300-1234567</strong>.</li>
+                                    <li>WhatsApp us for quick response.</li>
+                                </ul>
+                                <div class="alert alert-danger mt-2 mb-0">
+                                    <i class="bi bi-exclamation-octagon me-2"></i>
+                                    <strong>Emergency:</strong> For immediate safety concerns, contact local authorities first, then notify us.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Account Section -->
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="mb-4"><i class="bi bi-gear me-2 text-secondary"></i>Account & General</h3>
+                <div class="accordion help-accordion" id="accountAccordion">
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc1">
+                                How do I update my profile information?
+                            </button>
+                        </h2>
+                        <div id="acc1" class="accordion-collapse collapse" data-bs-parent="#accountAccordion">
+                            <div class="accordion-body text-muted">
+                                <ol>
+                                    <li>Login to your account.</li>
+                                    <li>Go to <strong>Dashboard → Profile</strong>.</li>
+                                    <li>Update your name, phone, city, address, or profile picture.</li>
+                                    <li>Click <strong>"Save Changes"</strong> to update.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc2">
+                                I forgot my password. What should I do?
+                            </button>
+                        </h2>
+                        <div id="acc2" class="accordion-collapse collapse" data-bs-parent="#accountAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>Currently, please contact our support team for password reset assistance:</p>
+                                <ul>
+                                    <li>Email: <strong>support@babycare.pk</strong></li>
+                                    <li>Phone: <strong>0300-1234567</strong></li>
+                                </ul>
+                                <p class="mb-0">Provide your registered email address and our team will help you reset your password.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item help-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc3">
+                                Which cities does BabyCare operate in?
+                            </button>
+                        </h2>
+                        <div id="acc3" class="accordion-collapse collapse" data-bs-parent="#accountAccordion">
+                            <div class="accordion-body text-muted">
+                                <p>BabyCare is available across all major cities in Pakistan, including:</p>
+                                <div class="row g-2">
+                                    <div class="col-md-4">
+                                        <ul class="mb-0">
+                                            <li>Karachi</li>
+                                            <li>Lahore</li>
+                                            <li>Islamabad</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <ul class="mb-0">
+                                            <li>Rawalpindi</li>
+                                            <li>Faisalabad</li>
+                                            <li>Multan</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <ul class="mb-0">
+                                            <li>Peshawar</li>
+                                            <li>Quetta</li>
+                                            <li>And more...</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Still Need Help CTA -->
+<section class="py-5">
+    <div class="container">
+        <div class="card p-5 text-center" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E); color: white;">
+            <h2 class="fw-bold mb-3">Still Need Help?</h2>
+            <p class="lead mb-4">Can't find what you're looking for? Our support team is ready to help!</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{{ url_for('contact') }}" class="btn btn-light btn-lg">
+                    <i class="bi bi-envelope me-2"></i>Contact Us
+                </a>
+                <a href="tel:03001234567" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-telephone me-2"></i>Call Support
+                </a>
+                <a href="https://wa.me/923001234567" target="_blank" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterHelp() {
+    const query = document.getElementById('helpSearch').value.toLowerCase();
+    const items = document.querySelectorAll('.help-item');
+    
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (query === '' || text.includes(query)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+</script>
+<style>
+.help-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+</style>
+{% endblock %}

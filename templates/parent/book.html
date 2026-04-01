@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Babysitter - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('search') }}">Find Babysitters</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('babysitter_profile', id=sitter.id) }}">{{
+                                sitter.full_name }}</a></li>
+                        <li class="breadcrumb-item active">Book</li>
+                    </ol>
+                </nav>
+
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0"><i class="bi bi-calendar-plus me-2 text-primary"></i>Book Babysitter</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Sitter Info -->
+                        <div class="d-flex align-items-center mb-4 p-3 bg-light rounded">
+                            <img src="{{ url_for('static', filename='uploads/' + sitter.profile_image) if sitter.profile_image else 'https://via.placeholder.com/80' }}"
+                                class="profile-img-small me-3">
+                            <div>
+                                <h5 class="mb-1">{{ sitter.full_name }}</h5>
+                                <p class="mb-0 text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>{{ sitter.city }}
+                                    <span class="mx-2">|</span>
+                                    <i class="bi bi-currency-rupee me-1"></i>{{ sitter.hourly_rate }}/hour
+                                </p>
+                            </div>
+                        </div>
+
+                        <form method="POST" action="{{ url_for('book_babysitter', sitter_id=sitter.id) }}">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Booking Date *</label>
+                                    <input type="date" name="booking_date" class="form-control" required
+                                        min="{{ datetime.now().strftime('%Y-%m-%d') }}">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Start Time *</label>
+                                    <input type="time" name="start_time" class="form-control" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">End Time *</label>
+                                    <input type="time" name="end_time" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Number of Children *</label>
+                                    <input type="number" name="number_of_children" class="form-control" value="1"
+                                        min="1" max="10" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Children's Ages</label>
+                                    <input type="text" name="children_ages" class="form-control"
+                                        placeholder="e.g., 3, 5, 8">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Special Instructions</label>
+                                <textarea name="special_instructions" class="form-control" rows="3"
+                                    placeholder="Any allergies, routines, activities, or other important information..."></textarea>
+                            </div>
+
+                            <!-- Price Summary -->
+                            <div class="card bg-light mb-4">
+                                <div class="card-body">
+                                    <h6 class="mb-3">Price Summary</h6>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Hourly Rate:</span>
+                                        <span>Rs. {{ sitter.hourly_rate }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Estimated Hours:</span>
+                                        <span id="estimatedHours">-</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Subtotal:</span>
+                                        <span id="subtotal">-</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Platform Fee (10%):</span>
+                                        <span id="platformFee">-</span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between fw-bold">
+                                        <span>Total Amount:</span>
+                                        <span class="text-primary" id="totalAmount">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                You will only be charged after the babysitter confirms your booking.
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>Proceed to Checkout
+                                </button>
+                                <a href="{{ url_for('babysitter_profile', id=sitter.id) }}"
+                                    class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Profile
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Availability Sidebar -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-calendar-week me-2 text-primary"></i>Availability</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if availability %}
+                        <div class="list-group list-group-flush">
+                            {% for slot in availability %}
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold">{{ ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri',
+                                        'Sat'][slot.day_of_week] }}</span>
+                                    <span class="text-muted">{{ slot.formatted_start }} - {{ slot.formatted_end
+                                        }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">Availability not specified.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const hourlyRate = parseFloat("{{ sitter.hourly_rate }}");
+
+    function calculatePrice() {
+        const startTime = document.querySelector('input[name="start_time"]').value;
+        const endTime = document.querySelector('input[name="end_time"]').value;
+
+        if (startTime && endTime) {
+            const start = new Date('2000-01-01 ' + startTime);
+            const end = new Date('2000-01-01 ' + endTime);
+
+            let hours = (end - start) / (1000 * 60 * 60);
+            if (hours < 0) hours += 24; // Handle overnight bookings
+
+            const subtotal = hours * hourlyRate;
+            const platformFee = subtotal * 0.10;
+            const total = subtotal + platformFee;
+
+            document.getElementById('estimatedHours').textContent = hours.toFixed(1) + ' hours';
+            document.getElementById('subtotal').textContent = 'Rs. ' + subtotal.toFixed(2);
+            document.getElementById('platformFee').textContent = 'Rs. ' + platformFee.toFixed(2);
+            document.getElementById('totalAmount').textContent = 'Rs. ' + total.toFixed(2);
+        }
+    }
+
+    document.querySelector('input[name="start_time"]').addEventListener('change', calculatePrice);
+    document.querySelector('input[name="end_time"]').addEventListener('change', calculatePrice);
+</script>
+{% endblock %}

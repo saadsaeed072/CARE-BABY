@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - {{ app_name }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">About BabyCare</h1>
+        <p class="lead">Pakistan's Trusted Babysitting Platform</p>
+    </div>
+</section>
+
+<!-- About Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card p-4">
+                    <h3 class="mb-4">Our Story</h3>
+                    <p>BabyCare was founded with a simple mission: to connect Pakistani families with trusted, verified
+                        childcare professionals. We understand the challenges working parents face in finding reliable
+                        babysitters, and we're here to make that process safe, easy, and convenient.</p>
+
+                    <p>Our platform serves as a bridge between parents seeking quality childcare and experienced
+                        babysitters looking for employment opportunities. With our rigorous verification process and
+                        user-friendly interface, we've created a community built on trust and transparency.</p>
+
+                    <h4 class="mt-4 mb-3">Our Mission</h4>
+                    <p>To provide every Pakistani family with access to safe, reliable, and professional childcare
+                        services while creating meaningful employment opportunities for caregivers across the country.
+                    </p>
+
+                    <h4 class="mt-4 mb-3">Our Values</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="feature-icon me-3" style="width: 50px; height: 50px; font-size: 1.2rem;">
+                                    <i class="bi bi-shield-check"></i>
+                                </div>
+                                <div>
+                                    <h6>Safety First</h6>
+                                    <p class="small text-muted mb-0">Every babysitter undergoes thorough background
+                                        checks and ID verification.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="feature-icon me-3"
+                                    style="width: 50px; height: 50px; font-size: 1.2rem; background: linear-gradient(135deg, #FF6B6B, #FF8E8E);">
+                                    <i class="bi bi-heart"></i>
+                                </div>
+                                <div>
+                                    <h6>Trust & Transparency</h6>
+                                    <p class="small text-muted mb-0">Genuine reviews and ratings help you make informed
+                                        decisions.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="feature-icon me-3"
+                                    style="width: 50px; height: 50px; font-size: 1.2rem; background: linear-gradient(135deg, #FFE66D, #FFF3A3);">
+                                    <i class="bi bi-lightning" style="color: #2C3E50;"></i>
+                                </div>
+                                <div>
+                                    <h6>Convenience</h6>
+                                    <p class="small text-muted mb-0">Book, pay, and communicate all in one place.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="feature-icon me-3"
+                                    style="width: 50px; height: 50px; font-size: 1.2rem; background: linear-gradient(135deg, #28a745, #34ce57);">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div>
+                                    <h6>Community</h6>
+                                    <p class="small text-muted mb-0">Building a supportive network of families and
+                                        caregivers.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2>Why Parents Trust Us</h2>
+            <p class="text-muted">We've built a platform that prioritizes your family's safety and convenience</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 p-4 text-center">
+                    <div class="display-4 text-primary mb-3">100%</div>
+                    <h5>ID Verified</h5>
+                    <p class="text-muted mb-0">Every babysitter on our platform is ID verified and background checked.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 p-4 text-center">
+                    <div class="display-4 text-success mb-3">24/7</div>
+                    <h5>Support</h5>
+                    <p class="text-muted mb-0">Our customer support team is always available to help you.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 p-4 text-center">
+                    <div class="display-4 text-info mb-3">4.8/5</div>
+                    <h5>Average Rating</h5>
+                    <p class="text-muted mb-0">Parents consistently rate our babysitters highly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="card p-5 text-center" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E); color: white;">
+            <h2 class="fw-bold mb-3">Ready to Get Started?</h2>
+            <p class="lead mb-4">Join thousands of Pakistani families who trust BabyCare</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                    <i class="bi bi-person-plus me-2"></i>Sign Up Now
+                </a>
+                <a href="{{ url_for('search') }}" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-search me-2"></i>Find a Babysitter
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

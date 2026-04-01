@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Bookings - Babysitter - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                            style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <h5 class="mb-1">{{ session.user_name }}</h5>
+                        <span class="badge bg-success">Babysitter</span>
+                    </div>
+
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('babysitter_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_profile_edit') }}">
+                            <i class="bi bi-person-circle"></i>My Profile
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_verification') }}">
+                            <i class="bi bi-shield-check"></i>Verification
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_availability') }}">
+                            <i class="bi bi-calendar-week"></i>Availability
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('babysitter_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>Bookings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_earnings') }}">
+                            <i class="bi bi-currency-rupee"></i>Earnings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_messages') }}">
+                            <i class="bi bi-chat-dots"></i>Messages
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_notifications') }}">
+                            <i class="bi bi-bell"></i>Notifications
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <h4 class="mb-4"><i class="bi bi-calendar-check me-2 text-success"></i>My Bookings</h4>
+
+                <!-- Filter Tabs -->
+                <ul class="nav nav-pills mb-4">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'all' else '' }}"
+                            href="{{ url_for('babysitter_bookings', status='all') }}">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'pending' else '' }}"
+                            href="{{ url_for('babysitter_bookings', status='pending') }}">Pending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'confirmed' else '' }}"
+                            href="{{ url_for('babysitter_bookings', status='confirmed') }}">Confirmed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'completed' else '' }}"
+                            href="{{ url_for('babysitter_bookings', status='completed') }}">Completed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'cancelled' else '' }}"
+                            href="{{ url_for('babysitter_bookings', status='cancelled') }}">Cancelled</a>
+                    </li>
+                </ul>
+
+                <!-- Bookings List -->
+                {% if bookings %}
+                <div class="row g-3">
+                    {% for booking in bookings %}
+                    <div class="col-12">
+                        <div class="card booking-card {{ booking.status }}">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2 text-center">
+                                        <img src="{{ url_for('static', filename='uploads/' + booking.parent_image) if booking.parent_image else 'https://via.placeholder.com/80' }}"
+                                            class="profile-img mb-2">
+                                        <div class="fw-bold">{{ booking.parent_name }}</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-2">
+                                            <i class="bi bi-calendar me-2 text-success"></i>
+                                            <strong>{{ booking.booking_date.strftime('%A, %d %B %Y') }}</strong>
+                                        </div>
+                                        <div class="mb-2">
+                                            <i class="bi bi-clock me-2 text-success"></i>
+                                            {{ booking.formatted_start }} - {{ booking.formatted_end }}
+                                        </div>
+                                        <div>
+                                            <i class="bi bi-hourglass me-2 text-success"></i>
+                                            {{ booking.total_hours }} hours
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-1">
+                                            <span class="text-muted">Children:</span>
+                                            <span class="fw-bold">{{ booking.number_of_children }}</span>
+                                        </div>
+                                        <div class="mb-1">
+                                            <span class="text-muted">Ages:</span>
+                                            <span class="fw-bold">{{ booking.children_ages or 'N/A' }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-muted">Your Earnings:</span>
+                                            <span class="fw-bold text-success">Rs. {{ booking.babysitter_earnings
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 text-end">
+                                        <span
+                                            class="badge bg-{{ 'success' if booking.status == 'confirmed' else 'warning' if booking.status == 'pending' else 'danger' if booking.status == 'cancelled' else 'info' }} mb-2">
+                                            {{ booking.status.title() }}
+                                        </span>
+                                        <div class="mt-2">
+                                            <a href="{{ url_for('babysitter_chat', user_id=booking.parent_id) }}"
+                                                class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-chat"></i>
+                                            </a>
+                                            {% if booking.status == 'pending' %}
+                                            <a href="{{ url_for('update_booking_status', booking_id=booking.id, action='accept') }}"
+                                                class="btn btn-sm btn-success">
+                                                <i class="bi bi-check-lg"></i>
+                                            </a>
+                                            <a href="{{ url_for('update_booking_status', booking_id=booking.id, action='reject') }}"
+                                                class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-x-lg"></i>
+                                            </a>
+                                            {% elif booking.status == 'confirmed' %}
+                                            <a href="{{ url_for('update_booking_status', booking_id=booking.id, action='complete') }}"
+                                                class="btn btn-sm btn-primary">
+                                                <i class="bi bi-check-circle me-1"></i>Complete
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if booking.special_instructions %}
+                                <div class="mt-3 p-2 bg-light rounded">
+                                    <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Special
+                                        Instructions:</small>
+                                    <p class="mb-0 small">{{ booking.special_instructions }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                        <h5 class="mt-3">No bookings found</h5>
+                        <p class="text-muted">You haven't received any bookings yet.</p>
+                        <a href="{{ url_for('babysitter_profile_edit') }}" class="btn btn-success">
+                            <i class="bi bi-person-circle me-2"></i>Complete Your Profile
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics - Admin - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                            style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <h5 class="mb-1">Admin</h5>
+                        <span class="badge bg-danger">Administrator</span>
+                    </div>
+
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="bi bi-people"></i>Users
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_verifications') }}">
+                            <i class="bi bi-shield-check"></i>Verifications
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>Bookings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_withdrawals') }}">
+                            <i class="bi bi-cash-stack"></i>Withdrawals
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('admin_analytics') }}">
+                            <i class="bi bi-graph-up"></i>Analytics
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_settings') }}">
+                            <i class="bi bi-gear"></i>Settings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_logs') }}">
+                            <i class="bi bi-journal-text"></i>Activity Logs
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <h4 class="mb-4"><i class="bi bi-graph-up me-2 text-danger"></i>Analytics Dashboard</h4>
+
+                <!-- Monthly Bookings Chart -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Monthly Bookings</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if monthly_bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Bookings</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in monthly_bookings %}
+                                    <tr>
+                                        <td>{{ item.month }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 20px;">
+                                                    {% set primary_width = (item.count /
+                                                    (monthly_bookings|map(attribute='count')|max or 1) * 100)|int %}
+                                                    {% set primary_style = 'style="width: ' ~ primary_width ~ '%;"' %}
+                                                    <div class="progress-bar bg-primary" {{ primary_style | safe }}>
+                                                        {{ item.count }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">No data available</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Monthly Revenue Chart -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Monthly Revenue</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if monthly_revenue %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in monthly_revenue %}
+                                    <tr>
+                                        <td>{{ item.month }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 20px;">
+                                                    {% set success_width = (item.revenue /
+                                                    (monthly_revenue|map(attribute='revenue')|max or 1) * 100)|int %}
+                                                    {% set success_style = 'style="width: ' ~ success_width ~ '%;"' %}
+                                                    <div class="progress-bar bg-success" {{ success_style | safe }}>
+                                                        Rs. {{ "%.0f"|format(item.revenue) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">No data available</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- User Growth -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">User Growth</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if user_growth %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>New Users</th>
+                                        <th>Parents</th>
+                                        <th>Babysitters</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in user_growth %}
+                                    <tr>
+                                        <td>{{ item.month }}</td>
+                                        <td>{{ item.count }}</td>
+                                        <td>{{ item.parents }}</td>
+                                        <td>{{ item.babysitters }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">No data available</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Top Babysitters -->
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Top Performing Babysitters</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if top_babysitters %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Name</th>
+                                        <th>Bookings</th>
+                                        <th>Rating</th>
+                                        <th>Total Earnings</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sitter in top_babysitters %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ sitter.full_name }}</td>
+                                        <td>{{ sitter.total_bookings }}</td>
+                                        <td>
+                                            <span class="rating-stars">
+                                                {% for i in range(5) %}
+                                                {% if i < sitter.rating_average|int %} <i class="bi bi-star-fill"></i>
+                                                    {% else %}
+                                                    <i class="bi bi-star"></i>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    <span class="text-muted ms-1">({{
+                                                        "%.1f"|format(sitter.rating_average) }})</span>
+                                            </span>
+                                        </td>
+                                        <td>Rs. {{ "%.0f"|format(sitter.total_earnings or 0) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">No data available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

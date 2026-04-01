@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}Find Babysitters - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <h3 class="mb-4"><i class="bi bi-search me-2 text-primary"></i>Find Babysitters</h3>
+        
+        <!-- Search Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="{{ url_for('search') }}" method="GET">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">City</label>
+                            <select name="city" class="form-select">
+                                <option value="">All Cities</option>
+                                {% for city in cities %}
+                                    <option value="{{ city.city }}" {{ 'selected' if filters.city == city.city else '' }}>{{ city.city }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Min Rate</label>
+                            <select name="min_rate" class="form-select">
+                                <option value="">Any</option>
+                                <option value="300" {{ 'selected' if filters.min_rate == '300' else '' }}>Rs. 300</option>
+                                <option value="500" {{ 'selected' if filters.min_rate == '500' else '' }}>Rs. 500</option>
+                                <option value="800" {{ 'selected' if filters.min_rate == '800' else '' }}>Rs. 800</option>
+                                <option value="1000" {{ 'selected' if filters.min_rate == '1000' else '' }}>Rs. 1000</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Max Rate</label>
+                            <select name="max_rate" class="form-select">
+                                <option value="">Any</option>
+                                <option value="500" {{ 'selected' if filters.max_rate == '500' else '' }}>Rs. 500</option>
+                                <option value="800" {{ 'selected' if filters.max_rate == '800' else '' }}>Rs. 800</option>
+                                <option value="1000" {{ 'selected' if filters.max_rate == '1000' else '' }}>Rs. 1000</option>
+                                <option value="1500" {{ 'selected' if filters.max_rate == '1500' else '' }}>Rs. 1500</option>
+                                <option value="2000" {{ 'selected' if filters.max_rate == '2000' else '' }}>Rs. 2000</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Experience</label>
+                            <select name="experience" class="form-select">
+                                <option value="">Any</option>
+                                <option value="1" {{ 'selected' if filters.experience == '1' else '' }}>1+ Years</option>
+                                <option value="3" {{ 'selected' if filters.experience == '3' else '' }}>3+ Years</option>
+                                <option value="5" {{ 'selected' if filters.experience == '5' else '' }}>5+ Years</option>
+                                <option value="10" {{ 'selected' if filters.experience == '10' else '' }}>10+ Years</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Language</label>
+                            <select name="language" class="form-select">
+                                <option value="">Any</option>
+                                <option value="Urdu" {{ 'selected' if filters.language == 'Urdu' else '' }}>Urdu</option>
+                                <option value="English" {{ 'selected' if filters.language == 'English' else '' }}>English</option>
+                                <option value="Punjabi" {{ 'selected' if filters.language == 'Punjabi' else '' }}>Punjabi</option>
+                                <option value="Sindhi" {{ 'selected' if filters.language == 'Sindhi' else '' }}>Sindhi</option>
+                                <option value="Pashto" {{ 'selected' if filters.language == 'Pashto' else '' }}>Pashto</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Results -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <p class="mb-0">{{ sitters|length }} babysitter(s) found</p>
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Sort By
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Highest Rated</a></li>
+                    <li><a class="dropdown-item" href="#">Lowest Price</a></li>
+                    <li><a class="dropdown-item" href="#">Most Experience</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        {% if sitters %}
+            <div class="row g-4">
+                {% for sitter in sitters %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="{{ url_for('static', filename='uploads/' + sitter.profile_image) if sitter.profile_image else 'https://via.placeholder.com/80' }}" 
+                                     alt="{{ sitter.full_name }}" class="profile-img-small me-3">
+                                <div>
+                                    <h5 class="mb-1">{{ sitter.full_name }}</h5>
+                                    {% if sitter.verification_status == 'verified' %}
+                                        <span class="verified-badge">
+                                            <i class="bi bi-check-circle-fill"></i>Verified
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ sitter.city }}</span>
+                                    <span class="text-muted"><i class="bi bi-briefcase me-1"></i>{{ sitter.years_of_experience }} years</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="rating-stars">
+                                        {% for i in range(5) %}
+                                            {% if i < sitter.rating_average|int %}
+                                                <i class="bi bi-star-fill"></i>
+                                            {% else %}
+                                                <i class="bi bi-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <span class="text-muted ms-1">({{ sitter.rating_count }})</span>
+                                    </span>
+                                    <span class="fw-bold text-primary">Rs. {{ sitter.hourly_rate }}/hr</span>
+                                </div>
+                            </div>
+                            
+                            {% if sitter.about_me %}
+                            <p class="text-muted small mb-3">{{ sitter.about_me[:100] }}{% if sitter.about_me|length > 100 %}...{% endif %}</p>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                {% if sitter.languages %}
+                                    {% for lang in sitter.languages.split(',')[:3] %}
+                                        <span class="badge bg-light text-dark me-1">{{ lang.strip() }}</span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('babysitter_profile', id=sitter.id) }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-person me-2"></i>View Profile
+                                </a>
+                                {% if session.user_type == 'parent' %}
+                                <a href="{{ url_for('book_babysitter', sitter_id=sitter.id) }}" class="btn btn-primary">
+                                    <i class="bi bi-calendar-plus me-2"></i>Book Now
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-search fs-1 text-muted"></i>
+                    <h5 class="mt-3">No babysitters found</h5>
+                    <p class="text-muted">Try adjusting your search filters.</p>
+                    <a href="{{ url_for('search') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-counterclockwise me-2"></i>Clear Filters
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

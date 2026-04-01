@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave Review - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('parent_bookings') }}">My Bookings</a></li>
+                        <li class="breadcrumb-item active">Leave Review</li>
+                    </ol>
+                </nav>
+                
+                <div class="card">
+                    <div class="card-header bg-white text-center">
+                        <h4 class="mb-0"><i class="bi bi-star me-2 text-warning"></i>Leave a Review</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <img src="{{ url_for('static', filename='uploads/' + booking.sitter_image) if booking.sitter_image else 'https://via.placeholder.com/80' }}" 
+                                 class="profile-img mb-3">
+                            <h5>{{ booking.sitter_name }}</h5>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-calendar me-1"></i>
+                                {{ booking.booking_date.strftime('%d %B %Y') }}
+                            </p>
+                        </div>
+                        
+                        <form method="POST" action="{{ url_for('leave_review', booking_id=booking.id) }}">
+                            <div class="mb-4 text-center">
+                                <label class="form-label d-block">How was your experience?</label>
+                                <div class="rating-stars fs-2" id="starRating">
+                                    <i class="bi bi-star" data-rating="1"></i>
+                                    <i class="bi bi-star" data-rating="2"></i>
+                                    <i class="bi bi-star" data-rating="3"></i>
+                                    <i class="bi bi-star" data-rating="4"></i>
+                                    <i class="bi bi-star" data-rating="5"></i>
+                                </div>
+                                <input type="hidden" name="rating" id="ratingInput" value="0" required>
+                                <div id="ratingText" class="text-muted mt-2">Click to rate</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Your Review</label>
+                                <textarea name="review_text" class="form-control" rows="4" 
+                                          placeholder="Share your experience with this babysitter..."></textarea>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-send me-2"></i>Submit Review
+                                </button>
+                                <a href="{{ url_for('parent_bookings') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Bookings
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    const stars = document.querySelectorAll('#starRating i');
+    const ratingInput = document.getElementById('ratingInput');
+    const ratingText = document.getElementById('ratingText');
+    const ratingLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.getAttribute('data-rating');
+            ratingInput.value = rating;
+            ratingText.textContent = ratingLabels[rating - 1];
+            
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.remove('bi-star');
+                    s.classList.add('bi-star-fill');
+                } else {
+                    s.classList.remove('bi-star-fill');
+                    s.classList.add('bi-star');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseenter', function() {
+            const rating = this.getAttribute('data-rating');
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add('text-warning');
+                } else {
+                    s.classList.remove('text-warning');
+                }
+            });
+        });
+    });
+    
+    document.getElementById('starRating').addEventListener('mouseleave', function() {
+        const currentRating = ratingInput.value;
+        stars.forEach((s, index) => {
+            s.classList.remove('text-warning');
+            if (index < currentRating) {
+                s.classList.add('text-warning');
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

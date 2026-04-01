@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <h5 class="mb-1">Admin</h5>
+                        <span class="badge bg-danger">Administrator</span>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="{{ url_for('admin_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="bi bi-people"></i>Users
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_verifications') }}">
+                            <i class="bi bi-shield-check"></i>Verifications
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>Bookings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_withdrawals') }}">
+                            <i class="bi bi-cash-stack"></i>Withdrawals
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_analytics') }}">
+                            <i class="bi bi-graph-up"></i>Analytics
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_settings') }}">
+                            <i class="bi bi-gear"></i>Settings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_logs') }}">
+                            <i class="bi bi-journal-text"></i>Activity Logs
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <h4 class="mb-4"><i class="bi bi-speedometer2 me-2 text-danger"></i>Admin Dashboard</h4>
+                
+                <!-- Stats Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-primary">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="number">{{ total_parents }}</div>
+                            <div class="label">Total Parents</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-success">
+                                <i class="bi bi-heart"></i>
+                            </div>
+                            <div class="number">{{ total_babysitters }}</div>
+                            <div class="label">Babysitters</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-info">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="number">{{ total_bookings }}</div>
+                            <div class="label">Total Bookings</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-warning">
+                                <i class="bi bi-currency-rupee"></i>
+                            </div>
+                            <div class="number">Rs. {{ "%.0f"|format(total_revenue or 0) }}</div>
+                            <div class="label">Total Revenue</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pending Verifications -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-shield-check me-2 text-warning"></i>Pending Verifications</h5>
+                        <a href="{{ url_for('admin_verifications') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if pending_verifications %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>City</th>
+                                            <th>CNIC</th>
+                                            <th>Registered</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in pending_verifications %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                                                        <i class="bi bi-person"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">{{ user.full_name }}</div>
+                                                        <small class="text-muted">{{ user.email }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ user.city }}</td>
+                                            <td>{{ user.cnic_number or 'Not provided' }}</td>
+                                            <td>{{ user.created_at.strftime('%d %b %Y') }}</td>
+                                            <td>
+                                                <a href="{{ url_for('admin_verifications') }}" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-eye me-1"></i>Review
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-check-circle fs-1 text-success"></i>
+                                <p class="text-muted mt-2">No pending verifications</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Recent Bookings -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>Recent Bookings</h5>
+                        <a href="{{ url_for('admin_bookings') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_bookings %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Parent</th>
+                                            <th>Babysitter</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in recent_bookings %}
+                                        <tr>
+                                            <td>#{{ booking.id }}</td>
+                                            <td>{{ booking.parent_name }}</td>
+                                            <td>{{ booking.sitter_name }}</td>
+                                            <td>{{ booking.booking_date.strftime('%d %b %Y') }}</td>
+                                            <td>Rs. {{ booking.total_amount }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ 'success' if booking.status == 'confirmed' else 'warning' if booking.status == 'pending' else 'danger' if booking.status == 'cancelled' else 'info' }}">
+                                                    {{ booking.status.title() }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                                <p class="text-muted mt-2">No bookings yet</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Pending Withdrawals -->
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-cash-stack me-2 text-success"></i>Pending Withdrawals</h5>
+                        <a href="{{ url_for('admin_withdrawals') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if pending_withdrawals %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Babysitter</th>
+                                            <th>Amount</th>
+                                            <th>Method</th>
+                                            <th>Requested</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for withdrawal in pending_withdrawals %}
+                                        <tr>
+                                            <td>{{ withdrawal.sitter_name }}</td>
+                                            <td class="fw-bold">Rs. {{ withdrawal.amount }}</td>
+                                            <td>
+                                                {% if withdrawal.easypaisa_number %}
+                                                    <span class="badge bg-success">EasyPaisa</span>
+                                                {% elif withdrawal.jazzcash_number %}
+                                                    <span class="badge bg-danger">JazzCash</span>
+                                                {% else %}
+                                                    <span class="badge bg-primary">Bank</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ withdrawal.requested_at.strftime('%d %b %Y') }}</td>
+                                            <td>
+                                                <a href="{{ url_for('admin_withdrawals') }}" class="btn btn-sm btn-success">
+                                                    <i class="bi bi-check-lg me-1"></i>Process
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-check-circle fs-1 text-success"></i>
+                                <p class="text-muted mt-2">No pending withdrawals</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

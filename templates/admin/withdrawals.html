@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Withdrawals - Admin - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <h5 class="mb-1">Admin</h5>
+                        <span class="badge bg-danger">Administrator</span>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="bi bi-people"></i>Users
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_verifications') }}">
+                            <i class="bi bi-shield-check"></i>Verifications
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>Bookings
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('admin_withdrawals') }}">
+                            <i class="bi bi-cash-stack"></i>Withdrawals
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_analytics') }}">
+                            <i class="bi bi-graph-up"></i>Analytics
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_settings') }}">
+                            <i class="bi bi-gear"></i>Settings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_logs') }}">
+                            <i class="bi bi-journal-text"></i>Activity Logs
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <h4 class="mb-4"><i class="bi bi-cash-stack me-2 text-danger"></i>Withdrawal Requests</h4>
+                
+                <!-- Filter Tabs -->
+                <ul class="nav nav-pills mb-4">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'pending' else '' }}" href="{{ url_for('admin_withdrawals', status='pending') }}">Pending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'approved' else '' }}" href="{{ url_for('admin_withdrawals', status='approved') }}">Approved</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'completed' else '' }}" href="{{ url_for('admin_withdrawals', status='completed') }}">Completed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'rejected' else '' }}" href="{{ url_for('admin_withdrawals', status='rejected') }}">Rejected</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if status_filter == 'all' else '' }}" href="{{ url_for('admin_withdrawals', status='all') }}">All</a>
+                    </li>
+                </ul>
+                
+                <!-- Withdrawals Table -->
+                <div class="card">
+                    <div class="card-body">
+                        {% if withdrawals %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Babysitter</th>
+                                            <th>Amount</th>
+                                            <th>Method</th>
+                                            <th>Details</th>
+                                            <th>Requested</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for w in withdrawals %}
+                                        <tr>
+                                            <td>#{{ w.id }}</td>
+                                            <td>
+                                                <div class="fw-bold">{{ w.sitter_name }}</div>
+                                                <small class="text-muted">{{ w.sitter_email }}</small>
+                                            </td>
+                                            <td class="fw-bold">Rs. {{ w.amount }}</td>
+                                            <td>
+                                                {% if w.easypaisa_number %}
+                                                    <span class="badge bg-success">EasyPaisa</span>
+                                                {% elif w.jazzcash_number %}
+                                                    <span class="badge bg-danger">JazzCash</span>
+                                                {% else %}
+                                                    <span class="badge bg-primary">Bank</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if w.easypaisa_number %}
+                                                    <small>{{ w.easypaisa_number }}</small>
+                                                {% elif w.jazzcash_number %}
+                                                    <small>{{ w.jazzcash_number }}</small>
+                                                {% else %}
+                                                    <small>{{ w.bank_name }}<br>{{ w.account_number }}</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ w.requested_at.strftime('%d %b %Y') }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ 'warning' if w.status == 'pending' else 'success' if w.status == 'completed' else 'danger' if w.status == 'rejected' else 'info' }}">
+                                                    {{ w.status.title() }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if w.status == 'pending' %}
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal{{ w.id }}">
+                                                            <i class="bi bi-check-lg"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal{{ w.id }}">
+                                                            <i class="bi bi-x-lg"></i>
+                                                        </button>
+                                                    </div>
+                                                {% elif w.status == 'approved' %}
+                                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#completeModal{{ w.id }}">
+                                                        <i class="bi bi-check-circle me-1"></i>Mark Complete
+                                                    </button>
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-cash-stack fs-1 text-muted"></i>
+                                <p class="text-muted mt-2">No withdrawal requests found</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Action Modals -->
+{% for w in withdrawals %}
+{% if w.status == 'pending' %}
+<!-- Approve Modal -->
+<div class="modal fade" id="approveModal{{ w.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Approve Withdrawal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin_process_withdrawal', withdrawal_id=w.id, action='approve') }}">
+                <div class="modal-body">
+                    <p>Approve withdrawal request for <strong>{{ w.sitter_name }}</strong>?</p>
+                    <p class="mb-0"><strong>Amount:</strong> Rs. {{ w.amount }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal{{ w.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reject Withdrawal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin_process_withdrawal', withdrawal_id=w.id, action='reject') }}">
+                <div class="modal-body">
+                    <p>Reject withdrawal request for <strong>{{ w.sitter_name }}</strong>?</p>
+                    <div class="mb-3">
+                        <label class="form-label">Reason for rejection</label>
+                        <textarea name="notes" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% elif w.status == 'approved' %}
+<!-- Complete Modal -->
+<div class="modal fade" id="completeModal{{ w.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Mark Withdrawal Complete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin_process_withdrawal', withdrawal_id=w.id, action='complete') }}">
+                <div class="modal-body">
+                    <p>Mark this withdrawal as completed for <strong>{{ w.sitter_name }}</strong>?</p>
+                    <p class="mb-0"><strong>Amount:</strong> Rs. {{ w.amount }}</p>
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">Transaction Reference (optional)</label>
+                        <input type="text" name="notes" class="form-control" placeholder="Transaction ID or reference number">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Mark Complete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}

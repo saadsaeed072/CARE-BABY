@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Verification - Babysitter - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <h5 class="mb-1">{{ session.user_name }}</h5>
+                        <span class="badge bg-success">Babysitter</span>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('babysitter_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_profile_edit') }}">
+                            <i class="bi bi-person-circle"></i>My Profile
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('babysitter_verification') }}">
+                            <i class="bi bi-shield-check"></i>Verification
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_availability') }}">
+                            <i class="bi bi-calendar-week"></i>Availability
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>Bookings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_earnings') }}">
+                            <i class="bi bi-currency-rupee"></i>Earnings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_messages') }}">
+                            <i class="bi bi-chat-dots"></i>Messages
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_notifications') }}">
+                            <i class="bi bi-bell"></i>Notifications
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <h4 class="mb-4"><i class="bi bi-shield-check me-2 text-success"></i>Verification</h4>
+                
+                <!-- Verification Status -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                {% if verification.verification_status == 'verified' %}
+                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 100px; height: 100px; font-size: 3rem;">
+                                        <i class="bi bi-check-lg"></i>
+                                    </div>
+                                    <h5 class="text-success">Verified</h5>
+                                {% elif verification.verification_status == 'pending' %}
+                                    <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 100px; height: 100px; font-size: 3rem;">
+                                        <i class="bi bi-hourglass-split"></i>
+                                    </div>
+                                    <h5 class="text-warning">Pending Review</h5>
+                                {% else %}
+                                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 100px; height: 100px; font-size: 3rem;">
+                                        <i class="bi bi-shield-exclamation"></i>
+                                    </div>
+                                    <h5 class="text-secondary">Not Verified</h5>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <h5>Why Verification Matters</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Builds trust with parents</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Increases your booking chances</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Get a verified badge on your profile</li>
+                                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Access to premium features</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if verification.verification_status != 'verified' %}
+                <!-- Verification Form -->
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Submit Verification Documents</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('babysitter_verification') }}" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label class="form-label">CNIC Number *</label>
+                                <input type="text" name="cnic_number" class="form-control" 
+                                       value="{{ verification.cnic_number or '' }}" 
+                                       placeholder="XXXXX-XXXXXXX-X" required
+                                       pattern="\d{5}-\d{7}-\d{1}">
+                                <small class="text-muted">Format: XXXXX-XXXXXXX-X</small>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">CNIC Front Side *</label>
+                                    <input type="file" name="cnic_front" class="form-control" accept="image/*" 
+                                           {{ 'required' if not verification.cnic_front_image else '' }}>
+                                    {% if verification.cnic_front_image %}
+                                        <small class="text-success"><i class="bi bi-check-circle me-1"></i>Already uploaded</small>
+                                    {% endif %}
+                                    <small class="text-muted d-block">Clear photo of CNIC front side</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CNIC Back Side *</label>
+                                    <input type="file" name="cnic_back" class="form-control" accept="image/*"
+                                           {{ 'required' if not verification.cnic_back_image else '' }}>
+                                    {% if verification.cnic_back_image %}
+                                        <small class="text-success"><i class="bi bi-check-circle me-1"></i>Already uploaded</small>
+                                    {% endif %}
+                                    <small class="text-muted d-block">Clear photo of CNIC back side</small>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Note:</strong> Your documents will be reviewed by our team within 24-48 hours. 
+                                We take your privacy seriously and all documents are stored securely.
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-upload me-2"></i>Submit for Verification
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Verified Status -->
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-shield-check text-success fs-1"></i>
+                        <h4 class="mt-3">Congratulations!</h4>
+                        <p class="text-muted">Your profile has been verified. You now have the verified badge on your profile.</p>
+                        <div class="mt-3">
+                            <span class="verified-badge fs-5">
+                                <i class="bi bi-check-circle-fill"></i>Verified Babysitter
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

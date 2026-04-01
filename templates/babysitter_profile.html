@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ sitter.full_name }} - Babysitter Profile - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-3 text-center">
+                        <img src="{{ url_for('static', filename='uploads/' + sitter.profile_image) if sitter.profile_image else 'https://via.placeholder.com/150' }}"
+                            alt="{{ sitter.full_name }}" class="profile-img mb-3">
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="mb-2">{{ sitter.full_name }}</h3>
+                        <div class="mb-2">
+                            {% if sitter.verification_status == 'verified' %}
+                            <span class="verified-badge me-2">
+                                <i class="bi bi-check-circle-fill"></i>Verified
+                            </span>
+                            {% endif %}
+                            {% if sitter.has_cpr %}
+                            <span class="badge bg-success me-1"><i class="bi bi-heart-pulse me-1"></i>CPR</span>
+                            {% endif %}
+                            {% if sitter.has_first_aid %}
+                            <span class="badge bg-info me-1"><i class="bi bi-bandaid me-1"></i>First Aid</span>
+                            {% endif %}
+                        </div>
+                        <div class="mb-2">
+                            <span class="rating-stars">
+                                {% for i in range(5) %}
+                                {% if i < sitter.rating_average|int %} <i class="bi bi-star-fill"></i>
+                                    {% else %}
+                                    <i class="bi bi-star"></i>
+                                    {% endif %}
+                                    {% endfor %}
+                                    <span class="text-muted ms-1">({{ sitter.rating_count }} reviews)</span>
+                            </span>
+                        </div>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-geo-alt me-2"></i>{{ sitter.city }}
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-briefcase me-2"></i>{{ sitter.years_of_experience }} years experience
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-check-circle me-2"></i>{{ sitter.total_bookings }} bookings
+                        </p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="mb-3">
+                            <span class="display-6 fw-bold text-primary">Rs. {{ sitter.hourly_rate }}</span>
+                            <span class="text-muted">/hour</span>
+                        </div>
+                        {% if session.user_type == 'parent' %}
+                        <a href="{{ url_for('book_babysitter', sitter_id=sitter.id) }}"
+                            class="btn btn-primary btn-lg w-100 mb-2">
+                            <i class="bi bi-calendar-plus me-2"></i>Book Now
+                        </a>
+                        <a href="{{ url_for('parent_chat', user_id=sitter.id) }}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-chat me-2"></i>Message
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- About -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-person me-2 text-primary"></i>About</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ sitter.about_me or 'No description provided.' }}</p>
+                    </div>
+                </div>
+
+                <!-- Skills & Qualifications -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-award me-2 text-primary"></i>Skills & Qualifications</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Languages</h6>
+                                <p>
+                                    {% if sitter.languages %}
+                                    {% for lang in sitter.languages.split(',') %}
+                                    <span class="badge bg-light text-dark me-1 mb-1">{{ lang.strip() }}</span>
+                                    {% endfor %}
+                                    {% else %}
+                                    <span class="text-muted">Not specified</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Special Skills</h6>
+                                <p>
+                                    {% if sitter.special_skills %}
+                                    {% for skill in sitter.special_skills.split(',') %}
+                                    <span class="badge bg-light text-dark me-1 mb-1">{{ skill.strip() }}</span>
+                                    {% endfor %}
+                                    {% else %}
+                                    <span class="text-muted">Not specified</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        {% if sitter.certifications %}
+                        <div class="mt-3">
+                            <h6>Certifications</h6>
+                            <p>{{ sitter.certifications }}</p>
+                        </div>
+                        {% endif %}
+                        {% if sitter.education %}
+                        <div class="mt-3">
+                            <h6>Education</h6>
+                            <p><i class="bi bi-mortarboard me-2"></i>{{ sitter.education }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Availability -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-calendar-week me-2 text-primary"></i>Availability</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if availability %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for slot in availability %}
+                                    <tr>
+                                        <td>{{ ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                                            'Saturday'][slot.day_of_week] }}</td>
+                                        <td>{{ slot.start_time.strftime('%I:%M %p') }} - {{
+                                            slot.end_time.strftime('%I:%M %p') }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">Availability not specified.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-star me-2 text-primary"></i>Reviews</h5>
+                        <span class="badge bg-primary">{{ sitter.rating_count }} reviews</span>
+                    </div>
+                    <div class="card-body">
+                        {% if reviews %}
+                        {% for review in reviews %}
+                        <div class="border-bottom mb-3 pb-3 {{ 'last' if loop.last else '' }}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('static', filename='uploads/' + review.parent_image) if review.parent_image else 'https://via.placeholder.com/40' }}"
+                                        class="profile-img-small me-2">
+                                    <div>
+                                        <div class="fw-bold">{{ review.parent_name }}</div>
+                                        <small class="text-muted">{{ review.created_at.strftime('%d %b %Y') }}</small>
+                                    </div>
+                                </div>
+                                <span class="rating-stars">
+                                    {% for i in range(5) %}
+                                    {% if i < review.rating %} <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                        <i class="bi bi-star"></i>
+                                        {% endif %}
+                                        {% endfor %}
+                                </span>
+                            </div>
+                            <p class="mb-0">{{ review.review_text }}</p>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-muted mb-0">No reviews yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Quick Info -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Quick Info</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>ID Verified
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>Background Checked
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>{{ sitter.total_bookings }}
+                                Completed Bookings
+                            </li>
+                            {% if sitter.has_cpr %}
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>CPR Certified
+                            </li>
+                            {% endif %}
+                            {% if sitter.has_first_aid %}
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>First Aid Certified
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Safety Tips -->
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-shield-check me-2 text-primary"></i>Safety Tips</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0 small">
+                            <li class="mb-2">
+                                <i class="bi bi-1-circle me-2 text-primary"></i>Always meet in a public place first
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-2-circle me-2 text-primary"></i>Verify the babysitter's identity
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-3-circle me-2 text-primary"></i>Discuss your expectations clearly
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-4-circle me-2 text-primary"></i>Keep emergency contacts handy
+                            </li>
+                            <li class="mb-0">
+                                <i class="bi bi-5-circle me-2 text-primary"></i>Trust your instincts
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block title %}Earnings - Babysitter - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <h5 class="mb-1">{{ session.user_name }}</h5>
+                        <span class="badge bg-success">Babysitter</span>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('babysitter_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_profile_edit') }}">
+                            <i class="bi bi-person-circle"></i>My Profile
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_verification') }}">
+                            <i class="bi bi-shield-check"></i>Verification
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_availability') }}">
+                            <i class="bi bi-calendar-week"></i>Availability
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>Bookings
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('babysitter_earnings') }}">
+                            <i class="bi bi-currency-rupee"></i>Earnings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_messages') }}">
+                            <i class="bi bi-chat-dots"></i>Messages
+                        </a>
+                        <a class="nav-link" href="{{ url_for('babysitter_notifications') }}">
+                            <i class="bi bi-bell"></i>Notifications
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <h4 class="mb-4"><i class="bi bi-currency-rupee me-2 text-success"></i>My Earnings</h4>
+                
+                <!-- Earnings Summary -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-success">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div class="number">Rs. {{ "%.0f"|format(summary.total_earnings or 0) }}</div>
+                            <div class="label">Total Earnings</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-primary">
+                                <i class="bi bi-calendar-month"></i>
+                            </div>
+                            <div class="number">Rs. {{ "%.0f"|format(summary.monthly_earnings or 0) }}</div>
+                            <div class="label">This Month</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-info">
+                                <i class="bi bi-calendar-week"></i>
+                            </div>
+                            <div class="number">Rs. {{ "%.0f"|format(summary.weekly_earnings or 0) }}</div>
+                            <div class="label">This Week</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-warning">
+                                <i class="bi bi-hourglass-split"></i>
+                            </div>
+                            <div class="number">Rs. {{ "%.0f"|format(summary.pending_earnings or 0) }}</div>
+                            <div class="label">Pending</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Withdrawal Button -->
+                <div class="card mb-4">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">Available for Withdrawal</h5>
+                            <p class="mb-0 text-muted">Minimum withdrawal: Rs. 1,000</p>
+                        </div>
+                        <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                            <i class="bi bi-cash-stack me-2"></i>Withdraw
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Recent Earnings -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-clock-history me-2 text-success"></i>Recent Earnings</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_earnings %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Parent</th>
+                                            <th>Hours</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for earning in recent_earnings %}
+                                        <tr>
+                                            <td>{{ earning.booking_date.strftime('%d %b, %Y') }}</td>
+                                            <td>{{ earning.parent_name }}</td>
+                                            <td>{{ earning.total_hours }} hrs</td>
+                                            <td class="text-success fw-bold">Rs. {{ earning.babysitter_earnings }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-currency-rupee fs-1 text-muted"></i>
+                                <p class="text-muted mt-2">No earnings yet</p>
+                                <p class="small text-muted">Complete bookings to start earning</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Withdrawal History -->
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-arrow-left-right me-2 text-success"></i>Withdrawal History</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if withdrawals %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Method</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for withdrawal in withdrawals %}
+                                        <tr>
+                                            <td>{{ withdrawal.requested_at.strftime('%d %b, %Y') }}</td>
+                                            <td class="fw-bold">Rs. {{ withdrawal.amount }}</td>
+                                            <td>
+                                                {% if withdrawal.easypaisa_number %}
+                                                    <span class="badge bg-success">EasyPaisa</span>
+                                                {% elif withdrawal.jazzcash_number %}
+                                                    <span class="badge bg-danger">JazzCash</span>
+                                                {% else %}
+                                                    <span class="badge bg-primary">Bank</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ 'warning' if withdrawal.status == 'pending' else 'success' if withdrawal.status == 'completed' else 'danger' }}">
+                                                    {{ withdrawal.status.title() }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-arrow-left-right fs-1 text-muted"></i>
+                                <p class="text-muted mt-2">No withdrawals yet</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Withdrawal Modal -->
+<div class="modal fade" id="withdrawModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Request Withdrawal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('request_withdrawal') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Amount (Rs.) *</label>
+                        <input type="number" name="amount" class="form-control" min="1000" required>
+                        <small class="text-muted">Minimum: Rs. 1,000</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Payment Method *</label>
+                        <select name="payment_method" class="form-select" id="paymentMethod" required>
+                            <option value="">Select Method</option>
+                            <option value="easypaisa">EasyPaisa</option>
+                            <option value="jazzcash">JazzCash</option>
+                            <option value="bank">Bank Transfer</option>
+                        </select>
+                    </div>
+                    
+                    <!-- EasyPaisa -->
+                    <div id="easypaisaFields" class="d-none">
+                        <div class="mb-3">
+                            <label class="form-label">EasyPaisa Number *</label>
+                            <input type="tel" name="easypaisa_number" class="form-control" placeholder="03XX-XXXXXXX">
+                        </div>
+                    </div>
+                    
+                    <!-- JazzCash -->
+                    <div id="jazzcashFields" class="d-none">
+                        <div class="mb-3">
+                            <label class="form-label">JazzCash Number *</label>
+                            <input type="tel" name="jazzcash_number" class="form-control" placeholder="03XX-XXXXXXX">
+                        </div>
+                    </div>
+                    
+                    <!-- Bank -->
+                    <div id="bankFields" class="d-none">
+                        <div class="mb-3">
+                            <label class="form-label">Bank Name *</label>
+                            <input type="text" name="bank_name" class="form-control" placeholder="e.g., HBL, UBL, Meezan Bank">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Account Number *</label>
+                            <input type="text" name="account_number" class="form-control" placeholder="Account Number">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Account Title *</label>
+                            <input type="text" name="account_title" class="form-control" placeholder="Name on Account">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Request Withdrawal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.getElementById('paymentMethod').addEventListener('change', function() {
+        const method = this.value;
+        document.getElementById('easypaisaFields').classList.add('d-none');
+        document.getElementById('jazzcashFields').classList.add('d-none');
+        document.getElementById('bankFields').classList.add('d-none');
+        
+        if (method === 'easypaisa') {
+            document.getElementById('easypaisaFields').classList.remove('d-none');
+        } else if (method === 'jazzcash') {
+            document.getElementById('jazzcashFields').classList.remove('d-none');
+        } else if (method === 'bank') {
+            document.getElementById('bankFields').classList.remove('d-none');
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

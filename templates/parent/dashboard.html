@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block title %}Parent Dashboard - {{ app_name }}{% endblock %}
+
+{% block content %}
+<section class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar mb-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                            style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <h5 class="mb-1">{{ session.user_name }}</h5>
+                        <span class="badge bg-primary">Parent</span>
+                    </div>
+
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="{{ url_for('parent_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('search') }}">
+                            <i class="bi bi-search"></i>Find Babysitters
+                        </a>
+                        <a class="nav-link" href="{{ url_for('parent_bookings') }}">
+                            <i class="bi bi-calendar-check"></i>My Bookings
+                        </a>
+                        <a class="nav-link" href="{{ url_for('parent_messages') }}">
+                            <i class="bi bi-chat-dots"></i>Messages
+                            {% if unread_messages > 0 %}
+                            <span class="badge bg-danger ms-auto">{{ unread_messages }}</span>
+                            {% endif %}
+                        </a>
+                        <a class="nav-link" href="{{ url_for('parent_notifications') }}">
+                            <i class="bi bi-bell"></i>Notifications
+                            {% if unread_notifications > 0 %}
+                            <span class="badge bg-danger ms-auto">{{ unread_notifications }}</span>
+                            {% endif %}
+                        </a>
+                        <a class="nav-link" href="{{ url_for('parent_profile') }}">
+                            <i class="bi bi-person-circle"></i>My Profile
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <h4 class="mb-4">Welcome back, {{ session.user_name }}!</h4>
+
+                <!-- Quick Stats -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-primary">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="number">{{ upcoming_bookings|length }}</div>
+                            <div class="label">Upcoming Bookings</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-success">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div class="number">{{ booking_history|length }}</div>
+                            <div class="label">Completed</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-warning">
+                                <i class="bi bi-chat-dots"></i>
+                            </div>
+                            <div class="number">{{ unread_messages }}</div>
+                            <div class="label">Unread Messages</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dashboard-card">
+                            <div class="icon bg-info">
+                                <i class="bi bi-bell"></i>
+                            </div>
+                            <div class="number">{{ unread_notifications }}</div>
+                            <div class="label">Notifications</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Bookings -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>Upcoming Bookings</h5>
+                        <a href="{{ url_for('parent_bookings') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if upcoming_bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Babysitter</th>
+                                        <th>Date & Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in upcoming_bookings %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ url_for('static', filename='uploads/' + booking.sitter_image) if booking.sitter_image else 'https://via.placeholder.com/40' }}"
+                                                    class="profile-img-small me-2">
+                                                <div>
+                                                    <div class="fw-bold">{{ booking.sitter_name }}</div>
+                                                    <small class="text-muted">{{ booking.sitter_phone }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>{{ booking.booking_date.strftime('%d %b, %Y') }}</div>
+                                            <small class="text-muted">{{ booking.formatted_start }} - {{
+                                                booking.formatted_end }}</small>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="badge bg-{{ 'success' if booking.status == 'confirmed' else 'warning' if booking.status == 'pending' else 'info' }}">
+                                                {{ booking.status.title() }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('parent_chat', user_id=booking.sitter_id) }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-chat"></i>
+                                            </a>
+                                            {% if booking.status != 'cancelled' and booking.status != 'completed' %}
+                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                data-bs-target="#cancelModal{{ booking.id }}">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">No upcoming bookings</p>
+                            <a href="{{ url_for('search') }}" class="btn btn-primary">Find a Babysitter</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Recent Booking History -->
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Recent History</h5>
+                        <a href="{{ url_for('parent_bookings') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if booking_history %}
+                        <div class="list-group list-group-flush">
+                            {% for booking in booking_history %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('static', filename='uploads/' + booking.sitter_image) if booking.sitter_image else 'https://via.placeholder.com/40' }}"
+                                        class="profile-img-small me-3">
+                                    <div>
+                                        <div class="fw-bold">{{ booking.sitter_name }}</div>
+                                        <small class="text-muted">{{ booking.booking_date.strftime('%d %b, %Y')
+                                            }}</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span
+                                        class="badge bg-{{ 'success' if booking.status == 'completed' else 'danger' if booking.status == 'cancelled' else 'secondary' }}">
+                                        {{ booking.status.title() }}
+                                    </span>
+                                    {% if booking.status == 'completed' %}
+                                    <div class="mt-1">
+                                        <a href="{{ url_for('leave_review', booking_id=booking.id) }}"
+                                            class="btn btn-sm btn-outline-warning">
+                                            <i class="bi bi-star me-1"></i>Review
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-clock-history fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">No booking history yet</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cancel Booking Modals -->
+{% for booking in upcoming_bookings %}
+<div class="modal fade" id="cancelModal{{ booking.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancel Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}">
+                <div class="modal-body">
+                    <p>Are you sure you want to cancel this booking with <strong>{{ booking.sitter_name }}</strong>?</p>
+                    <div class="mb-3">
+                        <label class="form-label">Reason for cancellation (optional)</label>
+                        <textarea name="cancellation_reason" class="form-control" rows="3"
+                            placeholder="Please let us know why you're cancelling..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Booking</button>
+                    <button type="submit" class="btn btn-danger">Cancel Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
