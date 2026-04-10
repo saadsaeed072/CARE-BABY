@@ -84,6 +84,7 @@
                     <!-- Message Input -->
                     <div class="card-footer bg-white">
                         <form method="POST" action="{{ url_for('babysitter_send_message') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <input type="hidden" name="receiver_id" value="{{ other_user.id }}">
                             <div class="input-group">
                                 <input type="text" name="message_text" class="form-control" 

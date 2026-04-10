@@ -168,6 +168,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ url_for('admin_process_withdrawal', withdrawal_id=w.id, action='approve') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <p>Approve withdrawal request for <strong>{{ w.sitter_name }}</strong>?</p>
                     <p class="mb-0"><strong>Amount:</strong> Rs. {{ w.amount }}</p>
@@ -190,6 +191,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ url_for('admin_process_withdrawal', withdrawal_id=w.id, action='reject') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <p>Reject withdrawal request for <strong>{{ w.sitter_name }}</strong>?</p>
                     <div class="mb-3">
@@ -215,6 +217,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ url_for('admin_process_withdrawal', withdrawal_id=w.id, action='complete') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <p>Mark this withdrawal as completed for <strong>{{ w.sitter_name }}</strong>?</p>
                     <p class="mb-0"><strong>Amount:</strong> Rs. {{ w.amount }}</p>

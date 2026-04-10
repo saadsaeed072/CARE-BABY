@@ -5,3 +5,4 @@ PyMySQL==1.1.0
 mysqlclient==2.2.0
 python-dotenv==1.0.0
 gunicorn==25.3.0
+Flask-WTF==1.1.1

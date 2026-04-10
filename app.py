@@ -7,15 +7,23 @@ from datetime import datetime, timedelta
 import os
 import secrets
 import re
+import uuid
+
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 
 # Configuration
-app.config['SECRET_KEY'] = secrets.token_hex(16)
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'babycare_db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(16))
+app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST', 'localhost')
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER', 'root')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD', '')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB', 'babycare_db')
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 
@@ -294,8 +302,8 @@ def register():
             flash('Passwords do not match.', 'danger')
             return redirect(url_for('register'))
         
-        if len(password) < 6:
-            flash('Password must be at least 6 characters long.', 'danger')
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long.', 'danger')
             return redirect(url_for('register'))
         
         cur = get_db_connection()
@@ -485,7 +493,7 @@ def parent_profile():
         if 'profile_image' in request.files:
             file = request.files['profile_image']
             if file and allowed_file(file.filename):
-                filename = f"user_{session['user_id']}_{secure_filename(file.filename)}"
+                filename = f"user_{session['user_id']}_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
                 
@@ -560,6 +568,39 @@ def book_babysitter(sitter_id):
         
         if total_hours <= 0:
             flash('End time must be after start time.', 'danger')
+            return redirect(url_for('book_babysitter', sitter_id=sitter_id))
+            
+        # Enforce babysitter availability
+        db_day_of_week = (booking_dt.weekday() + 1) % 7
+        start_td = timedelta(hours=start.hour, minutes=start.minute)
+        end_td = timedelta(hours=end.hour, minutes=end.minute)
+        
+        cur.execute("""
+            SELECT * FROM availability
+            WHERE babysitter_id = %s AND day_of_week = %s AND is_available = TRUE
+        """, (sitter['profile_id'], db_day_of_week))
+        day_slots = cur.fetchall()
+        
+        is_available = False
+        for slot in day_slots:
+            if slot['start_time'] <= start_td and slot['end_time'] >= end_td:
+                is_available = True
+                break
+                
+        if not is_available:
+            flash('The babysitter is not available for the requested time slot.', 'danger')
+            return redirect(url_for('book_babysitter', sitter_id=sitter_id))
+            
+        # Check for overlapping existing bookings
+        cur.execute("""
+            SELECT id FROM bookings
+            WHERE babysitter_id = %s AND booking_date = %s
+            AND status NOT IN ('cancelled', 'rejected')
+            AND start_time < %s AND end_time > %s
+        """, (sitter['profile_id'], booking_date, end_time, start_time))
+        
+        if cur.fetchone():
+            flash('The babysitter is already booked during this time slot.', 'danger')
             return redirect(url_for('book_babysitter', sitter_id=sitter_id))
         
         # Validate number_of_children
@@ -1017,7 +1058,7 @@ def babysitter_profile_edit():
         if 'profile_image' in request.files:
             file = request.files['profile_image']
             if file and allowed_file(file.filename):
-                filename = f"user_{session['user_id']}_{secure_filename(file.filename)}"
+                filename = f"user_{session['user_id']}_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
                 
@@ -1061,14 +1102,14 @@ def babysitter_verification():
         if 'cnic_front' in request.files:
             file = request.files['cnic_front']
             if file and allowed_file(file.filename):
-                cnic_front = f"cnic_front_{session['user_id']}_{secure_filename(file.filename)}"
+                cnic_front = f"cnic_front_{session['user_id']}_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], cnic_front))
         
         cnic_back = None
         if 'cnic_back' in request.files:
             file = request.files['cnic_back']
             if file and allowed_file(file.filename):
-                cnic_back = f"cnic_back_{session['user_id']}_{secure_filename(file.filename)}"
+                cnic_back = f"cnic_back_{session['user_id']}_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], cnic_back))
         
         update_fields = ["cnic_number = %s", "verification_status = 'pending'"]
@@ -1257,6 +1298,11 @@ def update_booking_status(booking_id, action):
         cur.execute("UPDATE bookings SET status = 'rejected' WHERE id = %s", (booking_id,))
         message = 'Booking rejected.'
     elif action == 'complete':
+        booking_end = datetime.combine(booking['booking_date'], (datetime.min + booking['end_time']).time())
+        if datetime.now() < booking_end:
+            flash('You cannot complete this booking until the job time has ended.', 'warning')
+            return redirect(url_for('babysitter_bookings'))
+            
         cur.execute("UPDATE bookings SET status = 'completed' WHERE id = %s", (booking_id,))
         
         cur.execute("""

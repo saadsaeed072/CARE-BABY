@@ -206,10 +206,17 @@
                                                 <i class="bi bi-chat"></i>
                                             </a>
                                             {% if booking.status == 'confirmed' %}
+                                            {% set booking_end = datetime.combine(booking.booking_date, (datetime.min + booking.end_time).time()) %}
+                                            {% if datetime.now() >= booking_end %}
                                             <a href="{{ url_for('update_booking_status', booking_id=booking.id, action='complete') }}"
                                                 class="btn btn-sm btn-success">
                                                 <i class="bi bi-check-circle"></i> Complete
                                             </a>
+                                            {% else %}
+                                            <button class="btn btn-sm btn-secondary" disabled title="Job not yet finished">
+                                                <i class="bi bi-clock me-1"></i>In Progress
+                                            </button>
+                                            {% endif %}
                                             {% endif %}
                                         </td>
                                     </tr>

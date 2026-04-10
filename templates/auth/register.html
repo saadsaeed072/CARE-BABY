@@ -17,6 +17,7 @@
                     </div>
 
                     <form method="POST" action="{{ url_for('register') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <!-- Account Type Selection -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">I want to register as:</label>

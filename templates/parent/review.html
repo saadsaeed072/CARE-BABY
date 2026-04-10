@@ -31,6 +31,7 @@
                         </div>
                         
                         <form method="POST" action="{{ url_for('leave_review', booking_id=booking.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <div class="mb-4 text-center">
                                 <label class="form-label d-block">How was your experience?</label>
                                 <div class="rating-stars fs-2" id="starRating">

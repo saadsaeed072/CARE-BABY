@@ -128,6 +128,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ url_for('admin_verify_profile', profile_id=v.profile_id, action='approve') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <p>Are you sure you want to approve the verification for <strong>{{ v.full_name }}</strong>?</p>
                     <p class="text-muted">This will mark the user as verified and they will receive a verified badge on their profile.</p>
@@ -150,6 +151,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ url_for('admin_verify_profile', profile_id=v.profile_id, action='reject') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <p>Are you sure you want to reject the verification for <strong>{{ v.full_name }}</strong>?</p>
                     <div class="mb-3">

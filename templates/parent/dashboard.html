@@ -220,6 +220,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <p>Are you sure you want to cancel this booking with <strong>{{ booking.sitter_name }}</strong>?</p>
                     <div class="mb-3">

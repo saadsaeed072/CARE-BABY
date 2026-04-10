@@ -93,6 +93,7 @@
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ url_for('babysitter_verification') }}" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <div class="mb-4">
                                 <label class="form-label">CNIC Number *</label>
                                 <input type="text" name="cnic_number" class="form-control" 

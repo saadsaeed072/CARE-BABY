@@ -54,6 +54,7 @@
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ url_for('babysitter_profile_edit') }}" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <!-- Profile Image -->
                             <div class="text-center mb-4">
                                 <img src="{{ url_for('static', filename='uploads/' + user.profile_image) if user.profile_image else 'https://via.placeholder.com/150' }}" 
