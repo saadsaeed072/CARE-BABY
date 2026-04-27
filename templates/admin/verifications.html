@@ -18,28 +18,28 @@
                     </div>
                     
                     <nav class="nav flex-column">
-                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}">
                             <i class="bi bi-speedometer2"></i>Dashboard
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_users') }}">
                             <i class="bi bi-people"></i>Users
                         </a>
-                        <a class="nav-link active" href="{{ url_for('admin_verifications') }}">
+                        <a class="nav-link active" href="{{ url_for('admin.admin_verifications') }}">
                             <i class="bi bi-shield-check"></i>Verifications
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_bookings') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_bookings') }}">
                             <i class="bi bi-calendar-check"></i>Bookings
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_withdrawals') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_withdrawals') }}">
                             <i class="bi bi-cash-stack"></i>Withdrawals
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_analytics') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_analytics') }}">
                             <i class="bi bi-graph-up"></i>Analytics
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_settings') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_settings') }}">
                             <i class="bi bi-gear"></i>Settings
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_logs') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_logs') }}">
                             <i class="bi bi-journal-text"></i>Activity Logs
                         </a>
                     </nav>
@@ -127,7 +127,7 @@
                 <h5 class="modal-title">Approve Verification</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="{{ url_for('admin_verify_profile', profile_id=v.profile_id, action='approve') }}">
+            <form method="POST" action="{{ url_for('admin.admin_verify_profile', profile_id=v.profile_id, action='approve') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <p>Are you sure you want to approve the verification for <strong>{{ v.full_name }}</strong>?</p>
@@ -150,7 +150,7 @@
                 <h5 class="modal-title">Reject Verification</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="{{ url_for('admin_verify_profile', profile_id=v.profile_id, action='reject') }}">
+            <form method="POST" action="{{ url_for('admin.admin_verify_profile', profile_id=v.profile_id, action='reject') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <p>Are you sure you want to reject the verification for <strong>{{ v.full_name }}</strong>?</p>

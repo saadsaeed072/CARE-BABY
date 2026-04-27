@@ -87,7 +87,7 @@
             <div class="col-lg-8 reveal-right">
                 <div class="card p-4 hover-scale">
                     <h4 class="mb-4"><i class="bi bi-send me-2 text-primary"></i>Send Us a Message</h4>
-                    <form method="POST" action="{{ url_for('contact') }}">
+                    <form method="POST" action="{{ url_for('public.contact') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="row g-3">
                             <div class="col-md-6">

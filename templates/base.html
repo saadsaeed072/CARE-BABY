@@ -19,7 +19,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
+            <a class="navbar-brand" href="{{ url_for('public.index') }}">
                 <i class="bi bi-heart-fill me-2"></i>{{ app_name }}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -28,50 +28,50 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('search') }}">Find Babysitters</a>
+                        <a class="nav-link" href="{{ url_for('public.search') }}">Find Babysitters</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('how_it_works') }}">How It Works</a>
+                        <a class="nav-link" href="{{ url_for('public.how_it_works') }}">How It Works</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                        <a class="nav-link" href="{{ url_for('public.about') }}">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+                        <a class="nav-link" href="{{ url_for('public.contact') }}">Contact</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
                     {% if session.user_id %}
                     {% if session.user_type == 'parent' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('parent_dashboard') }}">
+                        <a class="nav-link" href="{{ url_for('parent.parent_dashboard') }}">
                             <i class="bi bi-speedometer2 me-1"></i>Dashboard
                         </a>
                     </li>
                     {% elif session.user_type == 'babysitter' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('babysitter_dashboard') }}">
+                        <a class="nav-link" href="{{ url_for('babysitter.babysitter_dashboard') }}">
                             <i class="bi bi-speedometer2 me-1"></i>Dashboard
                         </a>
                     </li>
                     {% elif session.user_type == 'admin' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}">
                             <i class="bi bi-shield-lock me-1"></i>Admin
                         </a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">
                             <i class="bi bi-box-arrow-right me-1"></i>Logout
                         </a>
                     </li>
                     {% else %}
                     <li class="nav-item d-flex align-items-center">
-                        <a class="btn btn-outline-primary px-4 ms-2" href="{{ url_for('login') }}">Login</a>
+                        <a class="btn btn-outline-primary px-4 ms-2" href="{{ url_for('auth.login') }}">Login</a>
                     </li>
                     <li class="nav-item d-flex align-items-center">
-                        <a class="btn btn-primary px-4 ms-2" href="{{ url_for('register') }}">Register</a>
+                        <a class="btn btn-primary px-4 ms-2" href="{{ url_for('auth.register') }}">Register</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -108,19 +108,19 @@
                 <div class="col-md-2">
                     <h6>Quick Links</h6>
                     <ul class="list-unstyled mt-3">
-                        <li><a href="{{ url_for('index') }}">Home</a></li>
-                        <li><a href="{{ url_for('search') }}">Find Babysitters</a></li>
-                        <li><a href="{{ url_for('how_it_works') }}">How It Works</a></li>
-                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('public.index') }}">Home</a></li>
+                        <li><a href="{{ url_for('public.search') }}">Find Babysitters</a></li>
+                        <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+                        <li><a href="{{ url_for('public.about') }}">About Us</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2">
                     <h6>For Users</h6>
                     <ul class="list-unstyled mt-3">
-                        <li><a href="{{ url_for('register') }}">Register</a></li>
-                        <li><a href="{{ url_for('login') }}">Login</a></li>
-                        <li><a href="{{ url_for('help_center') }}">Help Center</a></li>
-                        <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                        <li><a href="{{ url_for('public.help_center') }}">Help Center</a></li>
+                        <li><a href="{{ url_for('public.contact') }}">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -141,6 +141,11 @@
             <hr class="my-4">
             <div class="text-center">
                 <p class="mb-0">&copy; {{ current_year }} {{ app_name }}. All rights reserved.</p>
+                <div class="mt-2">
+                    <a href="{{ url_for('public.privacy') }}" class="text-decoration-none mx-2 text-muted">Privacy Policy</a>
+                    <span class="text-muted">|</span>
+                    <a href="{{ url_for('public.terms') }}" class="text-decoration-none mx-2 text-muted">Terms of Service</a>
+                </div>
             </div>
         </div>
     </footer>

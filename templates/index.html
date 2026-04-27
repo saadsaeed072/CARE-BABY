@@ -12,10 +12,10 @@
                 <p class="lead mb-4">Connect with verified, experienced childcare professionals near you. Safe,
                     reliable, and convenient babysitting services for your little ones.</p>
                 <div class="d-flex gap-3">
-                    <a href="{{ url_for('search') }}" class="btn btn-light btn-lg">
+                    <a href="{{ url_for('public.search') }}" class="btn btn-light btn-lg">
                         <i class="bi bi-search me-2"></i>Find a Babysitter
                     </a>
-                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">
                         <i class="bi bi-person-plus me-2"></i>Join as Babysitter
                     </a>
                 </div>
@@ -32,7 +32,7 @@
 <section class="py-5" style="margin-top: -40px;">
     <div class="container reveal">
         <div class="card p-4 hover-scale">
-            <form action="{{ url_for('search') }}" method="GET">
+            <form action="{{ url_for('public.search') }}" method="GET">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label fw-bold"><i class="bi bi-geo-alt me-2 text-primary"></i>City</label>
@@ -170,7 +170,7 @@
                 <h2 class="fw-bold">Featured Babysitters</h2>
                 <p class="text-muted">Top-rated childcare professionals in your area</p>
             </div>
-            <a href="{{ url_for('search') }}" class="btn btn-outline-primary">
+            <a href="{{ url_for('public.search') }}" class="btn btn-outline-primary">
                 View All<i class="bi bi-arrow-right ms-2"></i>
             </a>
         </div>
@@ -216,7 +216,7 @@
                             {% endfor %}
                             {% endif %}
                         </div>
-                        <a href="{{ url_for('babysitter_profile', id=sitter.id) }}" class="btn btn-primary w-100">
+                        <a href="{{ url_for('public.babysitter_profile', id=sitter.id) }}" class="btn btn-primary w-100">
                             View Profile
                         </a>
                     </div>
@@ -305,10 +305,10 @@
             <h2 class="fw-bold mb-3">Ready to Find Your Perfect Babysitter?</h2>
             <p class="lead mb-4">Join thousands of Pakistani families who trust BabyCare for their childcare needs</p>
             <div class="d-flex justify-content-center gap-3">
-                <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">
                     <i class="bi bi-person-plus me-2"></i>Get Started
                 </a>
-                <a href="{{ url_for('search') }}" class="btn btn-outline-light btn-lg">
+                <a href="{{ url_for('public.search') }}" class="btn btn-outline-light btn-lg">
                     <i class="bi bi-search me-2"></i>Browse Sitters
                 </a>
             </div>

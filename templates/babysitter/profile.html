@@ -18,28 +18,28 @@
                     </div>
                     
                     <nav class="nav flex-column">
-                        <a class="nav-link" href="{{ url_for('babysitter_dashboard') }}">
+                        <a class="nav-link" href="{{ url_for('babysitter.babysitter_dashboard') }}">
                             <i class="bi bi-speedometer2"></i>Dashboard
                         </a>
-                        <a class="nav-link active" href="{{ url_for('babysitter_profile_edit') }}">
+                        <a class="nav-link active" href="{{ url_for('babysitter.babysitter_profile_edit') }}">
                             <i class="bi bi-person-circle"></i>My Profile
                         </a>
-                        <a class="nav-link" href="{{ url_for('babysitter_verification') }}">
+                        <a class="nav-link" href="{{ url_for('babysitter.babysitter_verification') }}">
                             <i class="bi bi-shield-check"></i>Verification
                         </a>
-                        <a class="nav-link" href="{{ url_for('babysitter_availability') }}">
+                        <a class="nav-link" href="{{ url_for('babysitter.babysitter_availability') }}">
                             <i class="bi bi-calendar-week"></i>Availability
                         </a>
-                        <a class="nav-link" href="{{ url_for('babysitter_bookings') }}">
+                        <a class="nav-link" href="{{ url_for('babysitter.babysitter_bookings') }}">
                             <i class="bi bi-calendar-check"></i>Bookings
                         </a>
-                        <a class="nav-link" href="{{ url_for('babysitter_earnings') }}">
+                        <a class="nav-link" href="{{ url_for('babysitter.babysitter_earnings') }}">
                             <i class="bi bi-currency-rupee"></i>Earnings
                         </a>
-                        <a class="nav-link" href="{{ url_for('babysitter_messages') }}">
+                        <a class="nav-link" href="{{ url_for('babysitter.babysitter_messages') }}">
                             <i class="bi bi-chat-dots"></i>Messages
                         </a>
-                        <a class="nav-link" href="{{ url_for('babysitter_notifications') }}">
+                        <a class="nav-link" href="{{ url_for('babysitter.babysitter_notifications') }}">
                             <i class="bi bi-bell"></i>Notifications
                         </a>
                     </nav>
@@ -53,7 +53,7 @@
                         <h5 class="mb-0"><i class="bi bi-person-circle me-2 text-success"></i>Edit Profile</h5>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ url_for('babysitter_profile_edit') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ url_for('babysitter.babysitter_profile_edit') }}" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <!-- Profile Image -->
                             <div class="text-center mb-4">
@@ -192,7 +192,7 @@
                                 <button type="submit" class="btn btn-success">
                                     <i class="bi bi-check-circle me-2"></i>Save Changes
                                 </button>
-                                <a href="{{ url_for('babysitter_dashboard') }}" class="btn btn-outline-secondary">
+                                <a href="{{ url_for('babysitter.babysitter_dashboard') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-x-circle me-2"></i>Cancel
                                 </a>
                             </div>

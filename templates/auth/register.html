@@ -16,8 +16,8 @@
                         <p class="text-muted">Join BabyCare today</p>
                     </div>
 
-                    <form method="POST" action="{{ url_for('register') }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <form method="POST" action="{{ url_for('auth.register') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         <!-- Account Type Selection -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">I want to register as:</label>
@@ -129,7 +129,8 @@
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="terms" required>
                                 <label class="form-check-label" for="terms">
-                                    I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#"
+                                    I agree to the <a href="{{ url_for('public.terms') }}" class="text-primary">Terms of
+                                        Service</a> and <a href="{{ url_for('public.privacy') }}"
                                         class="text-primary">Privacy Policy</a>
                                 </label>
                             </div>
@@ -141,7 +142,7 @@
                     </form>
 
                     <div class="text-center">
-                        <p class="mb-0">Already have an account? <a href="{{ url_for('login') }}"
+                        <p class="mb-0">Already have an account? <a href="{{ url_for('auth.login') }}"
                                 class="text-primary text-decoration-none fw-bold">Login</a></p>
                     </div>
                 </div>

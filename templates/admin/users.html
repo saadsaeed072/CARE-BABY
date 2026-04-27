@@ -18,28 +18,28 @@
                     </div>
                     
                     <nav class="nav flex-column">
-                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}">
                             <i class="bi bi-speedometer2"></i>Dashboard
                         </a>
-                        <a class="nav-link active" href="{{ url_for('admin_users') }}">
+                        <a class="nav-link active" href="{{ url_for('admin.admin_users') }}">
                             <i class="bi bi-people"></i>Users
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_verifications') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_verifications') }}">
                             <i class="bi bi-shield-check"></i>Verifications
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_bookings') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_bookings') }}">
                             <i class="bi bi-calendar-check"></i>Bookings
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_withdrawals') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_withdrawals') }}">
                             <i class="bi bi-cash-stack"></i>Withdrawals
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_analytics') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_analytics') }}">
                             <i class="bi bi-graph-up"></i>Analytics
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_settings') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_settings') }}">
                             <i class="bi bi-gear"></i>Settings
                         </a>
-                        <a class="nav-link" href="{{ url_for('admin_logs') }}">
+                        <a class="nav-link" href="{{ url_for('admin.admin_logs') }}">
                             <i class="bi bi-journal-text"></i>Activity Logs
                         </a>
                     </nav>
@@ -55,7 +55,7 @@
                 <!-- Filters -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <form method="GET" action="{{ url_for('admin_users') }}">
+                        <form method="GET" action="{{ url_for('admin.admin_users') }}">
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <label class="form-label">User Type</label>
@@ -75,7 +75,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 d-flex align-items-end">
-                                    <a href="{{ url_for('admin_users') }}" class="btn btn-outline-secondary">
+                                    <a href="{{ url_for('admin.admin_users') }}" class="btn btn-outline-secondary">
                                         <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
                                     </a>
                                 </div>
@@ -140,16 +140,16 @@
                                                     </button>
                                                     <ul class="dropdown-menu">
                                                         {% if user.is_active %}
-                                                            <li><a class="dropdown-item text-danger" href="{{ url_for('admin_user_action', user_id=user.id, action='deactivate') }}">
+                                                            <li><a class="dropdown-item text-danger" href="{{ url_for('admin.admin_user_action', user_id=user.id, action='deactivate') }}">
                                                                 <i class="bi bi-x-circle me-2"></i>Deactivate
                                                             </a></li>
                                                         {% else %}
-                                                            <li><a class="dropdown-item text-success" href="{{ url_for('admin_user_action', user_id=user.id, action='activate') }}">
+                                                            <li><a class="dropdown-item text-success" href="{{ url_for('admin.admin_user_action', user_id=user.id, action='activate') }}">
                                                                 <i class="bi bi-check-circle me-2"></i>Activate
                                                             </a></li>
                                                         {% endif %}
                                                         {% if not user.is_verified %}
-                                                            <li><a class="dropdown-item" href="{{ url_for('admin_user_action', user_id=user.id, action='verify') }}">
+                                                            <li><a class="dropdown-item" href="{{ url_for('admin.admin_user_action', user_id=user.id, action='verify') }}">
                                                                 <i class="bi bi-shield-check me-2"></i>Verify
                                                             </a></li>
                                                         {% endif %}

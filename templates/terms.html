@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms of Service - {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <h1 class="mb-4 text-primary font-weight-bold">Terms of Service</h1>
+                    <p class="text-muted mb-4">Last updated: {{ datetime.now().strftime('%B %d, %Y') }}</p>
+
+                    <section class="mb-5">
+                        <h4 class="text-secondary font-weight-semibold">1. Acceptance of Terms</h4>
+                        <p class="text-dark">By accessing or using the {{ app_name }} platform, you agree to be bound by these Terms of Service. If you do not agree to all the terms and conditions, you may not access the platform or use any of our services.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h4 class="text-secondary font-weight-semibold">2. Platform Description</h4>
+                        <p class="text-dark">{{ app_name }} is an online marketplace that connects parents seeking childcare services with independent babysitters. We do not directly employ the babysitters listed on our platform. The platform facilitates communication, booking, and payment processing between the parties.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h4 class="text-secondary font-weight-semibold">3. User Responsibilities</h4>
+                        <p class="text-dark">As a user of the platform, you agree to:</p>
+                        <ul class="text-dark">
+                            <li>Provide accurate, current, and complete information during registration.</li>
+                            <li>Maintain the security and confidentiality of your account credentials.</li>
+                            <li>Communicate respectfully and professionally with other users.</li>
+                            <li>Comply with all applicable local, state, and national laws regarding childcare and employment.</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h4 class="text-secondary font-weight-semibold">4. Payments and Fees</h4>
+                        <p class="text-dark">Parents agree to pay the hourly rates set by babysitters. {{ app_name }} reserves the right to charge a platform service fee for facilitating transactions, which will be clearly displayed before booking confirmation. Babysitters authorize us to process these payments and handle withdrawals according to our financial policies.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h4 class="text-secondary font-weight-semibold">5. Disclaimers and Limitation of Liability</h4>
+                        <p class="text-dark">While we conduct basic verifications, we do not guarantee the quality, safety, or legality of the services provided by babysitters. Users assume all risks associated with using the platform. In no event shall {{ app_name }} be liable for any direct, indirect, incidental, or consequential damages arising from the use of our services.</p>
+                    </section>
+
+                    <section>
+                        <h4 class="text-secondary font-weight-semibold">6. Modifications to Terms</h4>
+                        <p class="text-dark">We reserve the right to modify these terms at any time. We will notify users of significant changes. Continued use of the platform after changes constitutes acceptance of the new terms.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

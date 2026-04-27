@@ -9,8 +9,8 @@
             <div class="col-lg-6">
                 <nav aria-label="breadcrumb" class="mb-3">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ url_for('parent_bookings') }}">My Bookings</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('public.index') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('parent.parent_bookings') }}">My Bookings</a></li>
                         <li class="breadcrumb-item active">Leave Review</li>
                     </ol>
                 </nav>
@@ -30,7 +30,7 @@
                             </p>
                         </div>
                         
-                        <form method="POST" action="{{ url_for('leave_review', booking_id=booking.id) }}">
+                        <form method="POST" action="{{ url_for('parent.leave_review', booking_id=booking.id) }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <div class="mb-4 text-center">
                                 <label class="form-label d-block">How was your experience?</label>
@@ -55,7 +55,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-send me-2"></i>Submit Review
                                 </button>
-                                <a href="{{ url_for('parent_bookings') }}" class="btn btn-outline-secondary">
+                                <a href="{{ url_for('parent.parent_bookings') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-arrow-left me-2"></i>Back to Bookings
                                 </a>
                             </div>

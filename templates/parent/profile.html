@@ -18,22 +18,22 @@
                     </div>
                     
                     <nav class="nav flex-column">
-                        <a class="nav-link" href="{{ url_for('parent_dashboard') }}">
+                        <a class="nav-link" href="{{ url_for('parent.parent_dashboard') }}">
                             <i class="bi bi-speedometer2"></i>Dashboard
                         </a>
-                        <a class="nav-link" href="{{ url_for('search') }}">
+                        <a class="nav-link" href="{{ url_for('public.search') }}">
                             <i class="bi bi-search"></i>Find Babysitters
                         </a>
-                        <a class="nav-link" href="{{ url_for('parent_bookings') }}">
+                        <a class="nav-link" href="{{ url_for('parent.parent_bookings') }}">
                             <i class="bi bi-calendar-check"></i>My Bookings
                         </a>
-                        <a class="nav-link" href="{{ url_for('parent_messages') }}">
+                        <a class="nav-link" href="{{ url_for('parent.parent_messages') }}">
                             <i class="bi bi-chat-dots"></i>Messages
                         </a>
-                        <a class="nav-link" href="{{ url_for('parent_notifications') }}">
+                        <a class="nav-link" href="{{ url_for('parent.parent_notifications') }}">
                             <i class="bi bi-bell"></i>Notifications
                         </a>
-                        <a class="nav-link active" href="{{ url_for('parent_profile') }}">
+                        <a class="nav-link active" href="{{ url_for('parent.parent_profile') }}">
                             <i class="bi bi-person-circle"></i>My Profile
                         </a>
                     </nav>
@@ -47,7 +47,7 @@
                         <h5 class="mb-0"><i class="bi bi-person-circle me-2 text-primary"></i>Edit Profile</h5>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ url_for('parent_profile') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ url_for('parent.parent_profile') }}" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <!-- Profile Image -->
                             <div class="text-center mb-4">
@@ -137,7 +137,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle me-2"></i>Save Changes
                                 </button>
-                                <a href="{{ url_for('parent_dashboard') }}" class="btn btn-outline-secondary">
+                                <a href="{{ url_for('parent.parent_dashboard') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-x-circle me-2"></i>Cancel
                                 </a>
                             </div>
