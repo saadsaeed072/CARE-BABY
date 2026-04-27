@@ -7,8 +7,8 @@
 <section class="hero-section">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">Find Trusted Babysitters in Pakistan</h1>
+            <div class="col-lg-6 reveal">
+                <h1 class="display-4 fw-bold mb-4 animate-slideUp">Find Trusted Babysitters in Pakistan</h1>
                 <p class="lead mb-4">Connect with verified, experienced childcare professionals near you. Safe,
                     reliable, and convenient babysitting services for your little ones.</p>
                 <div class="d-flex gap-3">
@@ -20,9 +20,9 @@
                     </a>
                 </div>
             </div>
-            <div class="col-lg-6 text-center">
+            <div class="col-lg-6 text-center reveal-right">
                 <img src="https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=600&h=500&fit=crop" alt="Hero"
-                    class="img-fluid rounded-4 shadow-lg">
+                    class="img-fluid rounded-4 shadow-lg float-animation">
             </div>
         </div>
     </div>
@@ -30,8 +30,8 @@
 
 <!-- Search Bar Section -->
 <section class="py-5" style="margin-top: -40px;">
-    <div class="container">
-        <div class="card p-4">
+    <div class="container reveal">
+        <div class="card p-4 hover-scale">
             <form action="{{ url_for('search') }}" method="GET">
                 <div class="row g-3">
                     <div class="col-md-4">
@@ -86,26 +86,26 @@
 <section class="py-5">
     <div class="container">
         <div class="row g-4">
-            <div class="col-md-3">
-                <div class="stats-card">
+            <div class="col-md-3 reveal delay-1">
+                <div class="stats-card hover-scale">
                     <div class="stats-number">{{ parent_count }}</div>
                     <div class="text-muted">Happy Parents</div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stats-card">
+            <div class="col-md-3 reveal delay-2">
+                <div class="stats-card hover-scale">
                     <div class="stats-number">{{ sitter_count }}</div>
                     <div class="text-muted">Verified Babysitters</div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stats-card">
+            <div class="col-md-3 reveal delay-3">
+                <div class="stats-card hover-scale">
                     <div class="stats-number">{{ booking_count }}</div>
                     <div class="text-muted">Bookings Completed</div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stats-card">
+            <div class="col-md-3 reveal delay-4">
+                <div class="stats-card hover-scale">
                     <div class="stats-number">4.8</div>
                     <div class="text-muted">Average Rating</div>
                 </div>
@@ -117,7 +117,7 @@
 <!-- How It Works Section -->
 <section class="py-5 bg-white">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 reveal">
             <h2 class="fw-bold">How BabyCare Works</h2>
             <p class="text-muted">Finding the perfect babysitter is easy with our simple 4-step process</p>
         </div>
@@ -133,7 +133,7 @@
             </div>
             <div class="col-md-3">
                 <div class="text-center">
-                    <div class="feature-icon mx-auto" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E);">
+                    <div class="feature-icon mx-auto">
                         <i class="bi bi-search"></i>
                     </div>
                     <h5>2. Search & Connect</h5>
@@ -142,8 +142,8 @@
             </div>
             <div class="col-md-3">
                 <div class="text-center">
-                    <div class="feature-icon mx-auto" style="background: linear-gradient(135deg, #FFE66D, #FFF3A3);">
-                        <i class="bi bi-calendar-check" style="color: #2C3E50;"></i>
+                    <div class="feature-icon mx-auto">
+                        <i class="bi bi-calendar-check"></i>
                     </div>
                     <h5>3. Book & Pay</h5>
                     <p class="text-muted">Schedule bookings and pay securely through our platform</p>
@@ -151,7 +151,7 @@
             </div>
             <div class="col-md-3">
                 <div class="text-center">
-                    <div class="feature-icon mx-auto" style="background: linear-gradient(135deg, #28a745, #34ce57);">
+                    <div class="feature-icon mx-auto">
                         <i class="bi bi-heart"></i>
                     </div>
                     <h5>4. Enjoy Peace of Mind</h5>
@@ -177,8 +177,8 @@
 
         <div class="row g-4">
             {% for sitter in featured_sitters %}
-            <div class="col-md-4">
-                <div class="card h-100">
+            <div class="col-md-4 reveal">
+                <div class="card h-100 hover-scale">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             <img src="{{ url_for('static', filename='uploads/' + sitter.profile_image) if sitter.profile_image else 'https://via.placeholder.com/80' }}"
@@ -230,15 +230,14 @@
 <!-- Features Section -->
 <section class="py-5 bg-white">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 reveal">
             <h2 class="fw-bold">Why Choose BabyCare?</h2>
             <p class="text-muted">We prioritize safety, trust, and convenience for your family</p>
         </div>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="card h-100 p-4 text-center">
-                    <div class="feature-icon mx-auto mb-3"
-                        style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E);">
+                    <div class="feature-icon mx-auto mb-3">
                         <i class="bi bi-shield-check"></i>
                     </div>
                     <h5>Verified & Background Checked</h5>
@@ -248,8 +247,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card h-100 p-4 text-center">
-                    <div class="feature-icon mx-auto mb-3"
-                        style="background: linear-gradient(135deg, #4ECDC4, #6EE7DE);">
+                    <div class="feature-icon mx-auto mb-3">
                         <i class="bi bi-clock-history"></i>
                     </div>
                     <h5>Flexible Scheduling</h5>
@@ -259,9 +257,8 @@
             </div>
             <div class="col-md-4">
                 <div class="card h-100 p-4 text-center">
-                    <div class="feature-icon mx-auto mb-3"
-                        style="background: linear-gradient(135deg, #FFE66D, #FFF3A3);">
-                        <i class="bi bi-chat-dots" style="color: #2C3E50;"></i>
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-chat-dots"></i>
                     </div>
                     <h5>Direct Communication</h5>
                     <p class="text-muted">Chat with potential babysitters before booking to discuss your specific
@@ -270,8 +267,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card h-100 p-4 text-center">
-                    <div class="feature-icon mx-auto mb-3"
-                        style="background: linear-gradient(135deg, #28a745, #34ce57);">
+                    <div class="feature-icon mx-auto mb-3">
                         <i class="bi bi-credit-card"></i>
                     </div>
                     <h5>Secure Payments</h5>
@@ -281,8 +277,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card h-100 p-4 text-center">
-                    <div class="feature-icon mx-auto mb-3"
-                        style="background: linear-gradient(135deg, #6f42c1, #8a63d2);">
+                    <div class="feature-icon mx-auto mb-3">
                         <i class="bi bi-star-fill"></i>
                     </div>
                     <h5>Ratings & Reviews</h5>
@@ -291,8 +286,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card h-100 p-4 text-center">
-                    <div class="feature-icon mx-auto mb-3"
-                        style="background: linear-gradient(135deg, #fd7e14, #ff9f43);">
+                    <div class="feature-icon mx-auto mb-3">
                         <i class="bi bi-headset"></i>
                     </div>
                     <h5>24/7 Support</h5>
@@ -307,7 +301,7 @@
 <!-- CTA Section -->
 <section class="py-5">
     <div class="container">
-        <div class="card p-5 text-center" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E); color: white;">
+        <div class="card p-5 text-center reveal" style="background: var(--primary-color); color: white;">
             <h2 class="fw-bold mb-3">Ready to Find Your Perfect Babysitter?</h2>
             <p class="lead mb-4">Join thousands of Pakistani families who trust BabyCare for their childcare needs</p>
             <div class="d-flex justify-content-center gap-3">
