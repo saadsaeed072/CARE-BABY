@@ -351,7 +351,7 @@
         }
 
         .chat-message.sent {
-            background: linear-gradient(135deg, var(--primary-color), #FF8E8E);
+            background: var(--primary-color);
             color: white;
             margin-left: auto;
             border-bottom-right-radius: 5px;
@@ -376,7 +376,7 @@
         }
 
         .pending-badge {
-            background: linear-gradient(135deg, #ffc107, #ffda6a);
+            background: #ffc107;
             color: var(--dark-color);
         }
 

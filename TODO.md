@@ -13,12 +13,12 @@ This document outlines the recommended technical, architectural, and feature upg
 - [ ] **Implement Database Migrations**: Add **Flask-Migrate** to track and version database schema changes.
 
 ## 2. Security Enhancements
-- [ ] **Rate Limiting**: Add `Flask-Limiter` to protect login, registration, and contact forms from brute-force and spam attacks.
-- [ ] **Email Verification**: Implement token-based email verification upon registration before allowing users to book or offer services.
+- [x] **Rate Limiting**: Add `Flask-Limiter` to protect login, registration, and contact forms from brute-force and spam attacks.
+- [x] **Email Verification**: Implement token-based email verification upon registration before allowing users to book or offer services.
 - [ ] **Two-Factor Authentication (2FA)**: Add an optional 2FA layer for admin and user accounts using OTPs or Authenticator apps.
 
 ## 3. UI/UX & Theming
-- [ ] **Dashboard Theme Consistency**: The public pages have been upgraded to the "Prime Dental" clinical theme. The internal templates in `templates/admin/`, `templates/parent/`, and `templates/babysitter/` need to be audited to ensure they match this new aesthetic (stripping old gradients and glassmorphism).
+- [x] **Dashboard Theme Consistency**: The public pages have been upgraded to the "Prime Dental" clinical theme. The internal templates in `templates/admin/`, `templates/parent/`, and `templates/babysitter/` need to be audited to ensure they match this new aesthetic (stripping old gradients and glassmorphism).
 - [ ] **Real-time Notifications**: Replace traditional page-reload alerts with real-time push notifications using `Flask-SocketIO` (for messages and booking updates).
 
 ## 4. Feature Additions

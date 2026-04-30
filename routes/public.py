@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 import os
 import uuid
-from extensions import mysql
+from extensions import mysql, limiter
 from utils import get_db_connection, allowed_file, is_valid_email, is_valid_phone, login_required, role_required
 
 public_bp = Blueprint('public', __name__)
@@ -50,6 +50,7 @@ def about():
     return render_template('about.html')
 
 @public_bp.route('/contact', methods=['GET', 'POST'])
+@limiter.limit("3 per minute")
 def contact():
     if request.method == 'POST':
         name = request.form.get('name')
