@@ -201,14 +201,20 @@ def babysitter_verification():
         cnic_front = None
         if 'cnic_front' in request.files:
             file = request.files['cnic_front']
-            if file and allowed_file(file.filename):
+            if file and file.filename:
+                if not allowed_file(file.filename):
+                    flash('Invalid file type for CNIC front. Only PDF, PNG, JPEG are allowed.', 'danger')
+                    return redirect(url_for('babysitter.babysitter_verification'))
                 cnic_front = f"cnic_front_{session['user_id']}_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
                 file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], cnic_front))
         
         cnic_back = None
         if 'cnic_back' in request.files:
             file = request.files['cnic_back']
-            if file and allowed_file(file.filename):
+            if file and file.filename:
+                if not allowed_file(file.filename):
+                    flash('Invalid file type for CNIC back. Only PDF, PNG, JPEG are allowed.', 'danger')
+                    return redirect(url_for('babysitter.babysitter_verification'))
                 cnic_back = f"cnic_back_{session['user_id']}_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
                 file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], cnic_back))
         

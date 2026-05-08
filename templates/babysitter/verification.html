@@ -106,21 +106,23 @@
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <label class="form-label">CNIC Front Side *</label>
-                                    <input type="file" name="cnic_front" class="form-control" accept="image/*" 
-                                           {{ 'required' if not verification.cnic_front_image else '' }}>
+                                    <input type="file" name="cnic_front" class="form-control" accept="image/*,application/pdf" 
+                                           {{ 'required' if not verification.cnic_front_image else '' }}
+                                           onchange="validateFileType(this)">
                                     {% if verification.cnic_front_image %}
                                         <small class="text-success"><i class="bi bi-check-circle me-1"></i>Already uploaded</small>
                                     {% endif %}
-                                    <small class="text-muted d-block">Clear photo of CNIC front side</small>
+                                    <small class="text-muted d-block">Clear photo of CNIC front side (JPG, PNG or PDF)</small>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">CNIC Back Side *</label>
-                                    <input type="file" name="cnic_back" class="form-control" accept="image/*"
-                                           {{ 'required' if not verification.cnic_back_image else '' }}>
+                                    <input type="file" name="cnic_back" class="form-control" accept="image/*,application/pdf"
+                                           {{ 'required' if not verification.cnic_back_image else '' }}
+                                           onchange="validateFileType(this)">
                                     {% if verification.cnic_back_image %}
                                         <small class="text-success"><i class="bi bi-check-circle me-1"></i>Already uploaded</small>
                                     {% endif %}
-                                    <small class="text-muted d-block">Clear photo of CNIC back side</small>
+                                    <small class="text-muted d-block">Clear photo of CNIC back side (JPG, PNG or PDF)</small>
                                 </div>
                             </div>
                             
@@ -155,4 +157,20 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function validateFileType(input) {
+    const fileName = input.value;
+    const idxDot = fileName.lastIndexOf(".") + 1;
+    const extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (extFile == "jpg" || extFile == "jpeg" || extFile == "png" || extFile == "pdf") {
+        // Correct extension
+    } else {
+        alert("Only JPG, PNG and PDF files are allowed!");
+        input.value = "";
+    }
+}
+</script>
 {% endblock %}
