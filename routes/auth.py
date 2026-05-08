@@ -67,6 +67,23 @@ def register():
             flash('Please fill in all required fields.', 'danger')
             return redirect(url_for('auth.register'))
 
+        # Server‑side length checks
+        if len(full_name) > 30:
+            flash('Full name must be 30 characters or fewer.', 'danger')
+            return redirect(url_for('auth.register'))
+        if not full_name.replace(' ', '').isalpha():
+            flash('Full name must contain only letters and spaces.', 'danger')
+            return redirect(url_for('auth.register'))
+        if len(email) > 100:
+            flash('Email must be 100 characters or fewer.', 'danger')
+            return redirect(url_for('auth.register'))
+        if len(phone) > 11:
+            flash('Phone number must be 11 digits.', 'danger')
+            return redirect(url_for('auth.register'))
+        if len(address) > 250:
+            flash('Address must be 250 characters or fewer.', 'danger')
+            return redirect(url_for('auth.register'))
+
         # Validate user_type (prevent admin injection)
         if user_type not in ['parent', 'babysitter']:
             flash('Invalid account type.', 'danger')
@@ -88,6 +105,10 @@ def register():
 
         if len(password) < 8:
             flash('Password must be at least 8 characters long.', 'danger')
+            return redirect(url_for('auth.register'))
+
+        if len(password) > 30:
+            flash('Password must be between 8 and 30 characters long.', 'danger')
             return redirect(url_for('auth.register'))
 
         cur = get_db_connection()

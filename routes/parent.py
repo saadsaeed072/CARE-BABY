@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 import os
 import uuid
-from extensions import mysql
+from extensions import mysql, socketio
 from utils import get_db_connection, allowed_file, is_valid_email, is_valid_phone, login_required, role_required
 
 parent_bp = Blueprint('parent', __name__)
@@ -255,6 +255,13 @@ def book_babysitter(sitter_id):
         """, (sitter['id'], 'New Booking Request', 
               f'You have a new booking request from {session["user_name"]}', booking_id))
         
+        # Emit real-time notification
+        socketio.emit('new_notification', {
+            'title': 'New Booking Request',
+            'message': f'You have a new booking request from {session["user_name"]}',
+            'type': 'booking'
+        }, room=f"user_{sitter['id']}")
+        
         mysql.connection.commit()
         cur.close()
         
@@ -344,6 +351,16 @@ def cancel_booking(booking_id):
         WHERE bp.id = %s
     """, (f'Booking for {booking["booking_date"]} has been cancelled by parent', 
           booking_id, booking['babysitter_id']))
+
+    # Get babysitter user id for socket emission
+    cur.execute("SELECT user_id FROM babysitter_profiles WHERE id = %s", (booking['babysitter_id'],))
+    sitter_user_id = cur.fetchone()['user_id']
+    
+    socketio.emit('new_notification', {
+        'title': 'Booking Cancelled',
+        'message': f'Booking for {booking["booking_date"]} has been cancelled by parent',
+        'type': 'booking'
+    }, room=f"user_{sitter_user_id}")
     
     mysql.connection.commit()
     cur.close()
@@ -410,6 +427,12 @@ def leave_review(booking_id):
             VALUES (%s, %s, %s, 'booking', %s)
         """, (booking['sitter_user_id'], 'New Review Received',
               f'You received a {rating}-star review!', booking_id))
+        
+        socketio.emit('new_notification', {
+            'title': 'New Review Received',
+            'message': f'You received a {rating}-star review!',
+            'type': 'booking'
+        }, room=f"user_{booking['sitter_user_id']}")
         
         mysql.connection.commit()
         cur.close()
@@ -500,6 +523,12 @@ def send_message():
         INSERT INTO messages (sender_id, receiver_id, booking_id, message_text)
         VALUES (%s, %s, %s, %s)
     """, (session['user_id'], receiver_id, booking_id if booking_id else None, message_text))
+    
+    socketio.emit('new_message', {
+        'sender_id': session['user_id'],
+        'sender_name': session['user_name'],
+        'message_text': message_text
+    }, room=f"user_{receiver_id}")
     
     mysql.connection.commit()
     cur.close()

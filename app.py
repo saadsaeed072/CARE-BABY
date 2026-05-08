@@ -1,7 +1,7 @@
 from flask import Flask
 import os
 import secrets
-from extensions import mysql, csrf, limiter, mail
+from extensions import mysql, csrf, limiter, mail, socketio
 from routes.public import public_bp
 from routes.auth import auth_bp
 from routes.parent import parent_bp
@@ -39,6 +39,7 @@ def create_app():
     csrf.init_app(app)
     limiter.init_app(app)
     mail.init_app(app)
+    socketio.init_app(app)
 
     @app.context_processor
     def inject_globals():
@@ -56,9 +57,17 @@ def create_app():
     app.register_blueprint(babysitter_bp)
     app.register_blueprint(admin_bp)
 
+    @socketio.on('connect')
+    def handle_connect():
+        from flask import session
+        if 'user_id' in session:
+            import flask_socketio
+            flask_socketio.join_room(f"user_{session['user_id']}")
+            print(f"User {session['user_id']} connected and joined room user_{session['user_id']}")
+
     return app
 
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)

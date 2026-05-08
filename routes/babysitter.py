@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 import os
 import uuid
-from extensions import mysql
+from extensions import mysql, socketio
 from utils import get_db_connection, allowed_file, is_valid_email, is_valid_phone, login_required, role_required
 
 babysitter_bp = Blueprint('babysitter', __name__)
@@ -423,6 +423,12 @@ def update_booking_status(booking_id, action):
     """, (booking['parent_id'], f'Booking {action.title()}ed', 
           f'Your booking has been {action}ed by the babysitter', booking_id))
     
+    socketio.emit('new_notification', {
+        'title': f'Booking {action.title()}ed',
+        'message': f'Your booking has been {action}ed by the babysitter',
+        'type': 'booking'
+    }, room=f"user_{booking['parent_id']}")
+    
     mysql.connection.commit()
     cur.close()
     
@@ -616,6 +622,12 @@ def babysitter_send_message():
         INSERT INTO messages (sender_id, receiver_id, booking_id, message_text)
         VALUES (%s, %s, %s, %s)
     """, (session['user_id'], receiver_id, booking_id if booking_id else None, message_text))
+    
+    socketio.emit('new_message', {
+        'sender_id': session['user_id'],
+        'sender_name': session['user_name'],
+        'message_text': message_text
+    }, room=f"user_{receiver_id}")
     
     mysql.connection.commit()
     cur.close()

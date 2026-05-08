@@ -103,14 +103,10 @@
 
 {% block extra_js %}
 <script>
-    // Scroll to bottom of chat
     const chatContainer = document.getElementById('chatContainer');
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    
-    // Auto-refresh every 10 seconds
-    setInterval(function() {
-        location.reload();
-    }, 10000);
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 </script>
 {% endblock %}
 {% endblock %}

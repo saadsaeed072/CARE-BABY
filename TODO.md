@@ -14,16 +14,14 @@ This document outlines the recommended technical, architectural, and feature upg
 
 ## 2. Security Enhancements
 - [x] **Rate Limiting**: Add `Flask-Limiter` to protect login, registration, and contact forms from brute-force and spam attacks.
-- [x] **Email Verification**: Implement token-based email verification upon registration before allowing users to book or offer services.
-- [ ] **Two-Factor Authentication (2FA)**: Add an optional 2FA layer for admin and user accounts using OTPs or Authenticator apps.
+- [x] **Email Verification**: Implement token-based email verification upon registration before allowing users to book or offer services
 
 ## 3. UI/UX & Theming
 - [x] **Dashboard Theme Consistency**: The public pages have been upgraded to the "Prime Dental" clinical theme. The internal templates in `templates/admin/`, `templates/parent/`, and `templates/babysitter/` need to be audited to ensure they match this new aesthetic (stripping old gradients and glassmorphism).
-- [ ] **Real-time Notifications**: Replace traditional page-reload alerts with real-time push notifications using `Flask-SocketIO` (for messages and booking updates).
+- [x] **Real-time Notifications**: Replace traditional page-reload alerts with real-time push notifications using `Flask-SocketIO` (for messages and booking updates).
 
 ## 4. Feature Additions
 - [ ] **Automated Payments Integration**: Integrate actual payment gateway APIs (e.g., JazzCash, EasyPaisa API, or Stripe) instead of relying on manual payment verification.
-- [ ] **Automated Emails/SMS**: Integrate Twilio (for SMS) and SendGrid/SMTP (for emails) to automatically send booking confirmations and reminders.
 - [ ] **Interactive Maps**: Integrate Google Maps API for the Babysitter search, allowing parents to see sitters visually on a map based on their city/neighborhood.
 
 ## 5. Testing & DevOps
