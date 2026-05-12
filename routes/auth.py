@@ -8,6 +8,8 @@ from extensions import mysql, limiter, mail
 from utils import get_db_connection, allowed_file, is_valid_email, is_valid_phone, login_required, role_required
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from flask_mail import Message
+import random
+import string
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -310,3 +312,111 @@ def logout():
     session.clear()
     flash('You have been logged out.', 'info')
     return redirect(url_for('public.index'))
+
+
+# ─── FORGOT PASSWORD ──────────────────────────────────────────────────────────
+
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        if not email:
+            flash('Please enter your email address.', 'danger')
+            return redirect(url_for('auth.forgot_password'))
+
+        cur = get_db_connection()
+        cur.execute("SELECT id, full_name FROM users WHERE email = %s AND is_active = TRUE", (email,))
+        user = cur.fetchone()
+
+        if user:
+            # Generate 6-digit code
+            reset_code = ''.join(random.choices(string.digits, k=6))
+            # Set expiry (15 minutes)
+            expires_at = datetime.now() + timedelta(minutes=15)
+
+            cur.execute("""
+                UPDATE users SET reset_code = %s, reset_code_expires_at = %s
+                WHERE id = %s
+            """, (reset_code, expires_at, user['id']))
+            mysql.connection.commit()
+
+            # Send email
+            try:
+                msg = Message(
+                    subject="Your Password Reset Code - BabyCare",
+                    recipients=[email],
+                    html=render_template('emails/reset_password_code.html',
+                                         user_name=user['full_name'],
+                                         reset_code=reset_code)
+                )
+                mail.send(msg)
+                flash('A 6-digit reset code has been sent to your email.', 'success')
+                session['reset_email'] = email  # Store in session for the next step
+                cur.close()
+                return redirect(url_for('auth.reset_password'))
+            except Exception as e:
+                print(f"[EMAIL ERROR] Could not send reset email: {e}")
+                flash('Error sending email. Please try again later.', 'danger')
+        else:
+            # Don't reveal if email exists, but still redirect to reset password
+            # to prevent user enumeration (though code won't be sent)
+            flash('If that email is registered, a reset code has been sent.', 'info')
+        
+        cur.close()
+
+    return render_template('auth/forgot_password.html')
+
+
+# ─── RESET PASSWORD ───────────────────────────────────────────────────────────
+
+@auth_bp.route('/reset-password', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
+def reset_password():
+    email = session.get('reset_email')
+    if not email:
+        flash('Please request a reset code first.', 'warning')
+        return redirect(url_for('auth.forgot_password'))
+
+    if request.method == 'POST':
+        code = request.form.get('code', '').strip()
+        new_password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        if not code or not new_password or not confirm_password:
+            flash('Please fill in all fields.', 'danger')
+            return render_template('auth/reset_password.html')
+
+        if new_password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return render_template('auth/reset_password.html')
+
+        if len(new_password) < 8:
+            flash('Password must be at least 8 characters long.', 'danger')
+            return render_template('auth/reset_password.html')
+
+        cur = get_db_connection()
+        cur.execute("""
+            SELECT id FROM users 
+            WHERE email = %s AND reset_code = %s AND reset_code_expires_at > NOW()
+        """, (email, code))
+        user = cur.fetchone()
+
+        if user:
+            password_hash = generate_password_hash(new_password)
+            cur.execute("""
+                UPDATE users 
+                SET password_hash = %s, reset_code = NULL, reset_code_expires_at = NULL 
+                WHERE id = %s
+            """, (password_hash, user['id']))
+            mysql.connection.commit()
+            cur.close()
+            
+            session.pop('reset_email', None)
+            flash('Your password has been reset successfully. Please log in.', 'success')
+            return redirect(url_for('auth.login'))
+        else:
+            flash('Invalid or expired reset code.', 'danger')
+            cur.close()
+
+    return render_template('auth/reset_password.html')
