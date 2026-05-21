@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'macros.html' import empty_state %}
 
 {% block title %}Admin Dashboard - {{ app_name }}{% endblock %}
 
@@ -8,53 +9,18 @@
         <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-3">
-                <div class="sidebar mb-4">
-                    <div class="text-center mb-4">
-                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
-                            <i class="bi bi-shield-lock"></i>
-                        </div>
-                        <h5 class="mb-1">Admin</h5>
-                        <span class="badge bg-danger">Administrator</span>
-                    </div>
-                    
-                    <nav class="nav flex-column">
-                        <a class="nav-link active" href="{{ url_for('admin.admin_dashboard') }}">
-                            <i class="bi bi-speedometer2"></i>Dashboard
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.admin_users') }}">
-                            <i class="bi bi-people"></i>Users
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.admin_verifications') }}">
-                            <i class="bi bi-shield-check"></i>Verifications
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.admin_bookings') }}">
-                            <i class="bi bi-calendar-check"></i>Bookings
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.admin_withdrawals') }}">
-                            <i class="bi bi-cash-stack"></i>Withdrawals
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.admin_analytics') }}">
-                            <i class="bi bi-graph-up"></i>Analytics
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.admin_settings') }}">
-                            <i class="bi bi-gear"></i>Settings
-                        </a>
-                        <a class="nav-link" href="{{ url_for('admin.admin_logs') }}">
-                            <i class="bi bi-journal-text"></i>Activity Logs
-                        </a>
-                    </nav>
-                </div>
+                {% include 'admin/_sidebar.html' %}
             </div>
             
             <!-- Main Content -->
             <div class="col-lg-9">
-                <h4 class="mb-4"><i class="bi bi-speedometer2 me-2 text-danger"></i>Admin Dashboard</h4>
+                <h4 class="mb-4"><i class="bi bi-speedometer2 me-2 text-primary"></i>Admin Dashboard</h4>
                 
                 <!-- Stats Cards -->
                 <div class="row g-3 mb-4">
                     <div class="col-md-3">
-                        <div class="dashboard-card">
-                            <div class="icon bg-primary">
+                        <div class="dashboard-card border-top border-4 border-primary">
+                            <div class="icon bg-primary bg-opacity-10 text-primary">
                                 <i class="bi bi-people"></i>
                             </div>
                             <div class="number">{{ total_parents }}</div>
@@ -62,8 +28,8 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="dashboard-card">
-                            <div class="icon bg-success">
+                        <div class="dashboard-card border-top border-4 border-secondary">
+                            <div class="icon bg-secondary bg-opacity-10 text-secondary">
                                 <i class="bi bi-heart"></i>
                             </div>
                             <div class="number">{{ total_babysitters }}</div>
@@ -71,8 +37,8 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="dashboard-card">
-                            <div class="icon bg-info">
+                        <div class="dashboard-card border-top border-4 border-info">
+                            <div class="icon bg-info bg-opacity-10 text-info">
                                 <i class="bi bi-calendar-check"></i>
                             </div>
                             <div class="number">{{ total_bookings }}</div>
@@ -80,8 +46,8 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="dashboard-card">
-                            <div class="icon bg-warning">
+                        <div class="dashboard-card border-top border-4 border-success">
+                            <div class="icon bg-success bg-opacity-10 text-success">
                                 <i class="bi bi-currency-rupee"></i>
                             </div>
                             <div class="number">Rs. {{ "%.0f"|format(total_revenue or 0) }}</div>
@@ -137,10 +103,14 @@
                                 </table>
                             </div>
                         {% else %}
-                            <div class="text-center py-4">
-                                <i class="bi bi-check-circle fs-1 text-success"></i>
-                                <p class="text-muted mt-2">No pending verifications</p>
-                            </div>
+                            {{ empty_state(
+                                icon='bi-check-circle',
+                                title='All Caught Up',
+                                message='There are no babysitters waiting for verification. Good job!',
+                                cta_url=url_for('admin.admin_users'),
+                                cta_text='Manage Users',
+                                cta_icon='bi-people'
+                            ) }}
                         {% endif %}
                     </div>
                 </div>

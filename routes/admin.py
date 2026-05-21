@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, current_app, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
@@ -415,4 +415,10 @@ def api_unread_messages():
     cur.close()
     
     return jsonify({'unread_count': count})
+
+@admin_bp.route('/admin/secure-file/<filename>')
+@login_required
+@role_required(['admin'])
+def admin_secure_file(filename):
+    return send_from_directory(current_app.config['SECURE_UPLOAD_FOLDER'], filename)
 

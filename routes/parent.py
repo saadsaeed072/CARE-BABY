@@ -260,7 +260,7 @@ def book_babysitter(sitter_id):
             'title': 'New Booking Request',
             'message': f'You have a new booking request from {session["user_name"]}',
             'type': 'booking'
-        }, room=f"user_{sitter['id']}")
+        }, to=f"user_{sitter['id']}")
         
         mysql.connection.commit()
         cur.close()
@@ -360,13 +360,34 @@ def cancel_booking(booking_id):
         'title': 'Booking Cancelled',
         'message': f'Booking for {booking["booking_date"]} has been cancelled by parent',
         'type': 'booking'
-    }, room=f"user_{sitter_user_id}")
+    }, to=f"user_{sitter_user_id}")
     
     mysql.connection.commit()
     cur.close()
     
     flash('Booking cancelled successfully.', 'success')
     return redirect(url_for('parent.parent_bookings'))
+
+@parent_bp.route('/parent/booking/<int:booking_id>/track')
+@login_required
+@role_required(['parent'])
+def parent_track(booking_id):
+    cur = get_db_connection()
+    cur.execute("""
+        SELECT b.*, u.full_name as sitter_name, u.phone as sitter_phone
+        FROM bookings b
+        JOIN babysitter_profiles bp ON b.babysitter_id = bp.id
+        JOIN users u ON bp.user_id = u.id
+        WHERE b.id = %s AND b.parent_id = %s AND b.status = 'in_progress'
+    """, (booking_id, session['user_id']))
+    booking = cur.fetchone()
+    cur.close()
+    
+    if not booking:
+        flash('Booking not found or not currently in progress.', 'warning')
+        return redirect(url_for('parent.parent_bookings'))
+        
+    return render_template('parent/track.html', booking=booking)
 
 @parent_bp.route('/parent/booking/<int:booking_id>/review', methods=['GET', 'POST'])
 @login_required
@@ -432,7 +453,7 @@ def leave_review(booking_id):
             'title': 'New Review Received',
             'message': f'You received a {rating}-star review!',
             'type': 'booking'
-        }, room=f"user_{booking['sitter_user_id']}")
+        }, to=f"user_{booking['sitter_user_id']}")
         
         mysql.connection.commit()
         cur.close()
@@ -528,7 +549,7 @@ def send_message():
         'sender_id': session['user_id'],
         'sender_name': session['user_name'],
         'message_text': message_text
-    }, room=f"user_{receiver_id}")
+    }, to=f"user_{receiver_id}")
     
     mysql.connection.commit()
     cur.close()

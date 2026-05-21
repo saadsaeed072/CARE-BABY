@@ -23,7 +23,12 @@ def create_app():
     app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB', 'babycare_db')
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
+    app.config['SECURE_UPLOAD_FOLDER'] = 'uploads/secure'
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+    # Ensure upload directories exist
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config['SECURE_UPLOAD_FOLDER'], exist_ok=True)
 
     # Flask-Mail configuration
     app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
@@ -31,15 +36,16 @@ def create_app():
     app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'False') == 'True'
     app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', 'True') == 'True'
     app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'saadsaeed072@gmail.com')
-    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'kfukvcaskvahelci')  # App Password (no spaces)
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'kfukvcaskvahelci')
     app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'saadsaeed072@gmail.com')
+
 
     # Initialize extensions
     mysql.init_app(app)
     csrf.init_app(app)
     limiter.init_app(app)
     mail.init_app(app)
-    socketio.init_app(app)
+    socketio.init_app(app)  
 
     @app.context_processor
     def inject_globals():
@@ -47,7 +53,8 @@ def create_app():
             'datetime': datetime,
             'current_year': datetime.now().year,
             'app_name': 'BabyCare',
-            'app_tagline': 'Trusted Childcare for Pakistani Families'
+            'app_tagline': 'Trusted Childcare for Pakistani Families',
+
         }
 
     # Register blueprints
@@ -64,6 +71,17 @@ def create_app():
             import flask_socketio
             flask_socketio.join_room(f"user_{session['user_id']}")
             print(f"User {session['user_id']} connected and joined room user_{session['user_id']}")
+
+    @socketio.on('location_update')
+    def handle_location_update(data):
+        from flask import session
+        import flask_socketio
+        # Expected data: {'lat': float, 'lng': float, 'booking_id': int, 'parent_id': int}
+        if 'user_id' in session and session.get('user_type') == 'babysitter':
+            parent_id = data.get('parent_id')
+            if parent_id:
+                # Forward the babysitter's location directly to the parent's room
+                flask_socketio.emit('babysitter_location', data, to=f"user_{parent_id}")
 
     return app
 

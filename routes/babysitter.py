@@ -206,7 +206,7 @@ def babysitter_verification():
                     flash('Invalid file type for CNIC front. Only PDF, PNG, JPEG are allowed.', 'danger')
                     return redirect(url_for('babysitter.babysitter_verification'))
                 cnic_front = f"cnic_front_{session['user_id']}_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
-                file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], cnic_front))
+                file.save(os.path.join(current_app.config['SECURE_UPLOAD_FOLDER'], cnic_front))
         
         cnic_back = None
         if 'cnic_back' in request.files:
@@ -216,7 +216,7 @@ def babysitter_verification():
                     flash('Invalid file type for CNIC back. Only PDF, PNG, JPEG are allowed.', 'danger')
                     return redirect(url_for('babysitter.babysitter_verification'))
                 cnic_back = f"cnic_back_{session['user_id']}_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
-                file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], cnic_back))
+                file.save(os.path.join(current_app.config['SECURE_UPLOAD_FOLDER'], cnic_back))
         
         update_fields = ["cnic_number = %s", "verification_status = 'pending'"]
         params = [cnic_number]
@@ -400,6 +400,9 @@ def update_booking_status(booking_id, action):
     if action == 'accept':
         cur.execute("UPDATE bookings SET status = 'confirmed' WHERE id = %s", (booking_id,))
         message = 'Booking accepted successfully!'
+    elif action == 'start':
+        cur.execute("UPDATE bookings SET status = 'in_progress' WHERE id = %s", (booking_id,))
+        message = 'Job started successfully! You can now share your location.'
     elif action == 'reject':
         cur.execute("UPDATE bookings SET status = 'rejected' WHERE id = %s", (booking_id,))
         message = 'Booking rejected.'
@@ -433,13 +436,36 @@ def update_booking_status(booking_id, action):
         'title': f'Booking {action.title()}ed',
         'message': f'Your booking has been {action}ed by the babysitter',
         'type': 'booking'
-    }, room=f"user_{booking['parent_id']}")
+    }, to=f"user_{booking['parent_id']}")
     
     mysql.connection.commit()
     cur.close()
     
     flash(message, 'success')
     return redirect(url_for('babysitter.babysitter_bookings'))
+
+@babysitter_bp.route('/babysitter/booking/<int:booking_id>/track')
+@login_required
+@role_required(['babysitter'])
+def babysitter_track(booking_id):
+    cur = get_db_connection()
+    cur.execute("SELECT id FROM babysitter_profiles WHERE user_id = %s", (session['user_id'],))
+    profile = cur.fetchone()
+    
+    cur.execute("""
+        SELECT b.*, u.full_name as parent_name, u.phone as parent_phone
+        FROM bookings b
+        JOIN users u ON b.parent_id = u.id
+        WHERE b.id = %s AND b.babysitter_id = %s AND b.status = 'in_progress'
+    """, (booking_id, profile['id']))
+    booking = cur.fetchone()
+    cur.close()
+    
+    if not booking:
+        flash('Booking not found or not currently in progress.', 'warning')
+        return redirect(url_for('babysitter.babysitter_bookings'))
+        
+    return render_template('babysitter/track.html', booking=booking)
 
 @babysitter_bp.route('/babysitter/earnings')
 @login_required
@@ -633,7 +659,7 @@ def babysitter_send_message():
         'sender_id': session['user_id'],
         'sender_name': session['user_name'],
         'message_text': message_text
-    }, room=f"user_{receiver_id}")
+    }, to=f"user_{receiver_id}")
     
     mysql.connection.commit()
     cur.close()

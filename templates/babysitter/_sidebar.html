@@ -1,0 +1,38 @@
+<div class="sidebar mb-4 shadow-sm border-0">
+    <div class="text-center mb-4 p-3 bg-light rounded-top">
+        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 80px; height: 80px; font-size: 2rem;">
+            <i class="bi bi-heart"></i>
+        </div>
+        <h5 class="mb-1 text-primary fw-bold">{{ session.user_name }}</h5>
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">Babysitter</span>
+    </div>
+    
+    <nav class="nav flex-column p-2">
+        <a class="nav-link {{ 'active' if request.endpoint == 'babysitter.babysitter_dashboard' else '' }}" href="{{ url_for('babysitter.babysitter_dashboard') }}">
+            <i class="bi bi-speedometer2"></i>Dashboard
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'babysitter.babysitter_bookings' else '' }}" href="{{ url_for('babysitter.babysitter_bookings') }}">
+            <i class="bi bi-calendar-check"></i>My Jobs
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'babysitter.babysitter_availability' else '' }}" href="{{ url_for('babysitter.babysitter_availability') }}">
+            <i class="bi bi-clock"></i>Availability
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'babysitter.babysitter_earnings' else '' }}" href="{{ url_for('babysitter.babysitter_earnings') }}">
+            <i class="bi bi-currency-rupee"></i>Earnings
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'babysitter.babysitter_messages' or request.endpoint == 'babysitter.babysitter_chat' else '' }}" href="{{ url_for('babysitter.babysitter_messages') }}">
+            <i class="bi bi-chat-dots"></i>Messages
+            <span class="message-badge badge bg-danger ms-auto d-none">0</span>
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'babysitter.babysitter_notifications' else '' }}" href="{{ url_for('babysitter.babysitter_notifications') }}">
+            <i class="bi bi-bell"></i>Notifications
+            <span class="notification-badge badge bg-danger ms-auto d-none">0</span>
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'babysitter.babysitter_profile_edit' else '' }}" href="{{ url_for('babysitter.babysitter_profile_edit') }}">
+            <i class="bi bi-person-circle"></i>Profile
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'babysitter.babysitter_verification' else '' }}" href="{{ url_for('babysitter.babysitter_verification') }}">
+            <i class="bi bi-shield-check"></i>Verification
+        </a>
+    </nav>
+</div>

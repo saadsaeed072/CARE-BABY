@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Share Location - BabyCare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h2 class="text-primary mb-3"><i class="bi bi-geo-alt-fill"></i> Sharing Live Location</h2>
+            <p class="text-muted">You are currently sharing your location with <strong>{{ booking.parent_name
+                    }}</strong>. Tracking will stop when you complete the job.</p>
+
+            <div id="status" class="alert alert-info shadow-sm my-4">
+                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                Waiting for GPS connection...
+            </div>
+
+            <!-- MAP CONTAINER -->
+            <div id="map" class="shadow-sm border rounded"
+                style="width: 100%; height: 400px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                <p class="text-muted mb-0"><i class="bi bi-map"></i> Map will appear here once API is configured.</p>
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ url_for('babysitter.babysitter_bookings') }}" class="btn btn-secondary px-4 me-2">Back to
+                    Bookings</a>
+                <!-- You can uncomment this to add a quick "Complete Job" button here if needed -->
+                <!-- <a href="{{ url_for('babysitter.update_booking_status', booking_id=booking.id, action='complete') }}" class="btn btn-success px-4">Complete Job</a> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<!-- [GOOGLE MAPS API KEY PLACEHOLDER] -->
+<!-- Uncomment and add your key here to render the actual map -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB__3HpcSg8UQZPIB2TlpWUtzP3xKEFWU8&callback=initMap" async
+    defer></script>
+
+<script>
+    const socket = io();
+    const parentId = parseInt("{{ booking.parent_id }}");
+    const bookingId = parseInt("{{ booking.id }}");
+    const statusDiv = document.getElementById('status');
+    let watchId = null;
+    let map, marker;
+
+    // Optional Map Initialization for Babysitter (to see themselves)
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 16,
+            center: { lat: 31.5204, lng: 74.3587 },
+        });
+        marker = new google.maps.Marker({
+            map: map,
+            title: "You are here",
+            icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        });
+    }
+
+    if (navigator.geolocation) {
+        watchId = navigator.geolocation.watchPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                statusDiv.className = "alert alert-success shadow-sm my-4";
+                statusDiv.innerHTML = `<i class="bi bi-broadcast"></i> Location actively sharing (Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)})`;
+
+                // Emit location to parent
+                socket.emit('location_update', {
+                    lat: lat,
+                    lng: lng,
+                    booking_id: bookingId,
+                    parent_id: parentId
+                });
+
+                // Update local map if initialized
+                if (typeof google !== 'undefined' && map && marker) {
+                    const pos = { lat: lat, lng: lng };
+                    marker.setPosition(pos);
+                    map.setCenter(pos);
+                }
+            },
+            (error) => {
+                statusDiv.className = "alert alert-danger shadow-sm my-4";
+                statusDiv.innerHTML = "<i class='bi bi-exclamation-triangle'></i> Error tracking location: " + error.message;
+            },
+            {
+                enableHighAccuracy: true,
+                maximumAge: 10000,
+                timeout: 5000
+            }
+        );
+    } else {
+        statusDiv.className = "alert alert-danger shadow-sm my-4";
+        statusDiv.innerText = "Geolocation is not supported by your browser.";
+    }
+</script>
+{% endblock %}

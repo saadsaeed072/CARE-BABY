@@ -1,34 +1,38 @@
-# BabyCare Platform - Upgrade & Refactoring TODO
+# BabyCare Platform - Status & TODO
 
-This document outlines the recommended technical, architectural, and feature upgrades for the BabyCare platform based on a system audit.
+This document outlines the current status of the project, recent improvements, and remaining tasks based on the latest system audit.
 
-## 1. Architectural Refactoring
-- [x] **Implement Flask Blueprints**: `app.py` is currently monolithic (~2,000 lines). Break it down into modular blueprints:
-  - `routes/auth.py`
-  - `routes/admin.py`
-  - `routes/parent.py`
-  - `routes/babysitter.py`
-  - `routes/public.py`
-- [ ] **Migrate to an ORM**: Replace raw `flask_mysqldb` queries with **Flask-SQLAlchemy**. This will protect against SQL injection, simplify complex joins, and make the database portable.
-- [ ] **Implement Database Migrations**: Add **Flask-Migrate** to track and version database schema changes.
-- [ ] **Sync Schema Documentation**: Ensure `database/schema.sql` is always up-to-date with active migrations.
-- [ ] **Database Connection Pooling**: Optimize raw SQL connections or move to a pool-managed ORM connection.
+## ✅ Recent Improvements
+- **Maps Removal**: Successfully removed all Google Maps related code, UI elements, and API configurations to simplify the platform and reduce external dependencies.
+- **Dependency Management**: Updated `requirements.txt` with missing extensions (`Flask-Limiter`, `Flask-SocketIO`, `eventlet`).
+- **Configuration Security**: Moved hardcoded fallbacks for `MAIL` and `MYSQL` settings to use environment variables from `.env`.
+- **Schema Synchronization**: Updated `database/schema.sql` to include missing columns for Email Verification and Password Reset systems used in the code.
 
-## 2. Security Enhancements
-- [x] **Rate Limiting**: Add `Flask-Limiter` to protect login, registration, and contact forms from brute-force and spam attacks.
-- [x] **Email Verification**: Implement token-based email verification upon registration before allowing users to book or offer services.
-- [ ] **Environment Variable Security**: Remove all hardcoded passwords/secrets from `app.py` and ensure they only reside in `.env`.
-- [x] **AJAX CSRF Protection**: Added CSRF meta tags to `base.html` for secure socket and fetch operations.
+## 🛠️ Pending Tasks & Suggestions
 
-## 3. UI/UX & Theming
-- [x] **Dashboard Theme Consistency**: The public pages have been upgraded to the "Prime Dental" clinical theme. The internal templates in `templates/admin/`, `templates/parent/`, and `templates/babysitter/` need to be audited to ensure they match this new aesthetic (stripping old gradients and glassmorphism).
-- [x] **Real-time Notifications**: Replace traditional page-reload alerts with real-time push notifications using `Flask-SocketIO` (for messages and booking updates).
+### 1. Architectural Improvements
+- [ ] **Migrate to an ORM**: Replace raw `flask_mysqldb` queries with **Flask-SQLAlchemy** for better security (SQL injection protection) and cleaner code.
+- [ ] **Implement Database Migrations**: Add **Flask-Migrate** to track and version database changes properly.
+- [x] **Folder Cleanup**:
+    - [x] Delete `app_old_backup.py` (Verified obsolete - Ready for manual deletion).
+    - [x] Delete `fix_csrf.py` (Verified: All forms now have CSRF tokens - Ready for manual deletion).
 
-## 4. Feature Additions
-- [ ] **Automated Payments Integration**: Integrate actual payment gateway APIs (e.g., JazzCash, EasyPaisa API, or Stripe) instead of relying on manual payment verification.
-- [ ] **Interactive Maps**: Integrate Google Maps API for the Babysitter search, allowing parents to see sitters visually on a map based on their city/neighborhood.
+### 2. Security & Validation
+- [x] **Production Secret Management**: Ensure that `.env` is never committed to version control and that different secrets are used for production.
+- [ ] **Babysitter Verification Flow**: Audit the babysitter registration and verification flow to ensure CNIC images are stored securely and only accessible by admins.
 
-## 5. Testing & DevOps
-- [ ] **Unit & Integration Testing**: Create a `tests/` directory and write automated tests using `pytest` for critical paths (login, booking flow, payment calculation).
-- [ ] **Dockerization**: Create a `Dockerfile` and `docker-compose.yml` to easily spin up the Flask app and MySQL database locally or on a server.
-- [ ] **CI/CD Pipeline**: Setup GitHub Actions to automatically lint code and run tests on new commits.
+### 3. UI/UX & Theming
+- [x] **Theme Audit**: Continue auditing internal templates (`templates/admin/`, `templates/parent/`, etc.) to ensure they follow the "Prime Dental" clinical aesthetic consistently.
+- [x] **Empty States**: Add better "No results found" or "No messages yet" designs to dashboards.
+
+### 4. Technical Debt
+- [ ] **Lint Fixes**: Resolve false-positive lint errors related to `socketio.emit` by ensuring the IDE recognizes the installed `Flask-SocketIO` package.
+- [ ] **Error Handling**: Implement a global error handler for 404 and 500 errors to provide a professional user experience.
+
+### 5. Testing
+- [x] **Unit Testing**: Implement basic tests for authentication and booking logic using `pytest`.
+
+### 6. Dependency Upgrades & Tech Stack Modernization
+- [ ] **Migrate from Eventlet**: Replace the deprecated `eventlet` library with `gevent` or standard `asyncio` for WebSocket connections via `Flask-SocketIO` to ensure long-term support.
+- [ ] **Configure Redis for Rate Limiting**: Set up a Redis cache for `Flask-Limiter` in production to prevent memory leaks and scale horizontally, moving away from in-memory tracking.
+- [ ] **Update MySQL Library**: Address `Flask-MySQLdb` deprecation warnings (`_app_ctx_stack`) by either updating the library (once maintainers patch it) or fast-tracking the migration to `Flask-SQLAlchemy` (see Architectural Improvements).

@@ -8,3 +8,6 @@ gunicorn==25.3.0
 Flask-WTF==1.1.1
 Flask-Mail==0.10.0
 itsdangerous==2.1.2
+Flask-Limiter==3.5.0
+Flask-SocketIO==5.3.6
+eventlet==0.33.3

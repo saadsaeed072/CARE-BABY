@@ -9,5 +9,5 @@ mysql = MySQL()
 csrf = CSRFProtect()
 limiter = Limiter(key_func=get_remote_address)
 mail = Mail()
-socketio = SocketIO(cors_allowed_origins="*")
+socketio: SocketIO = SocketIO(cors_allowed_origins="*")
 

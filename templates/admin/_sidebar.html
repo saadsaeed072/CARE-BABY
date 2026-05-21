@@ -1,0 +1,36 @@
+<div class="sidebar mb-4 shadow-sm border-0">
+    <div class="text-center mb-4 p-3 bg-light rounded-top">
+        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 80px; height: 80px; font-size: 2rem;">
+            <i class="bi bi-shield-lock"></i>
+        </div>
+        <h5 class="mb-1 text-primary fw-bold">Admin Panel</h5>
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">Administrator</span>
+    </div>
+    
+    <nav class="nav flex-column p-2">
+        <a class="nav-link {{ 'active' if request.endpoint == 'admin.admin_dashboard' else '' }}" href="{{ url_for('admin.admin_dashboard') }}">
+            <i class="bi bi-speedometer2"></i>Dashboard
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'admin.admin_users' else '' }}" href="{{ url_for('admin.admin_users') }}">
+            <i class="bi bi-people"></i>Users
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'admin.admin_verifications' else '' }}" href="{{ url_for('admin.admin_verifications') }}">
+            <i class="bi bi-shield-check"></i>Verifications
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'admin.admin_bookings' else '' }}" href="{{ url_for('admin.admin_bookings') }}">
+            <i class="bi bi-calendar-check"></i>Bookings
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'admin.admin_withdrawals' else '' }}" href="{{ url_for('admin.admin_withdrawals') }}">
+            <i class="bi bi-cash-stack"></i>Withdrawals
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'admin.admin_analytics' else '' }}" href="{{ url_for('admin.admin_analytics') }}">
+            <i class="bi bi-graph-up"></i>Analytics
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'admin.admin_settings' else '' }}" href="{{ url_for('admin.admin_settings') }}">
+            <i class="bi bi-gear"></i>Settings
+        </a>
+        <a class="nav-link {{ 'active' if request.endpoint == 'admin.admin_logs' else '' }}" href="{{ url_for('admin.admin_logs') }}">
+            <i class="bi bi-journal-text"></i>Activity Logs
+        </a>
+    </nav>
+</div>

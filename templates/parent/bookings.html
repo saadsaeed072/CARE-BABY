@@ -131,6 +131,12 @@
                                                 <i class="bi bi-star"></i>
                                             </a>
                                             {% endif %}
+                                            {% if booking.status == 'in_progress' %}
+                                            <a href="{{ url_for('parent.parent_track', booking_id=booking.id) }}"
+                                                class="btn btn-sm btn-success text-white" title="Track Live Location">
+                                                <i class="bi bi-geo-alt"></i> Track
+                                            </a>
+                                            {% endif %}
                                             {% if booking.status not in ['cancelled', 'completed', 'rejected'] %}
                                             <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
                                                 data-bs-target="#cancelModal{{ booking.id }}">

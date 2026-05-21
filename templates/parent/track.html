@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Track Babysitter - BabyCare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h2 class="text-primary mb-3"><i class="bi bi-geo-alt"></i> Tracking {{ booking.sitter_name }}</h2>
+            <p class="text-muted">Live tracking is active until the service completes.</p>
+
+            <div id="status" class="alert alert-info shadow-sm my-4">
+                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                Waiting for babysitter's location update...
+            </div>
+
+            <!-- MAP CONTAINER -->
+            <div id="map" class="shadow-sm border rounded"
+                style="width: 100%; height: 500px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                <p class="text-muted mb-0"><i class="bi bi-map"></i> Map will appear here once API is configured.</p>
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ url_for('parent.parent_bookings') }}" class="btn btn-secondary px-4">Back to Bookings</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<!-- [GOOGLE MAPS API KEY PLACEHOLDER] -->
+<!-- Uncomment and add your key here to render the actual map -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB__3HpcSg8UQZPIB2TlpWUtzP3xKEFWU8&callback=initMap" async
+    defer></script>
+
+<script>
+    const socket = io();
+    const statusDiv = document.getElementById('status');
+    const bookingId = parseInt("{{ booking.id }}");
+    let map, marker;
+
+    // Map Initialization
+    function initMap() {
+        // Fallback or initial center
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 16,
+            center: { lat: 31.5204, lng: 74.3587 }, // Default center
+            mapTypeControl: false,
+        });
+        marker = new google.maps.Marker({
+            map: map,
+            title: "{{ booking.sitter_name }}",
+            animation: google.maps.Animation.DROP
+        });
+    }
+
+    // Listen for real-time updates from the babysitter
+    socket.on('babysitter_location', function (data) {
+        if (data.booking_id === bookingId) {
+            statusDiv.className = "alert alert-success shadow-sm my-4";
+            statusDiv.innerHTML = `<i class="bi bi-check-circle-fill"></i> Location received: updated just now.`;
+
+            // If map and marker are loaded, update their positions
+            if (typeof google !== 'undefined' && map && marker) {
+                const pos = { lat: data.lat, lng: data.lng };
+                marker.setPosition(pos);
+                map.setCenter(pos);
+            }
+        }
+    });
+</script>
+{% endblock %}

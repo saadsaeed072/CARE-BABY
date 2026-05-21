@@ -351,19 +351,15 @@ def forgot_password():
                                          reset_code=reset_code)
                 )
                 mail.send(msg)
-                flash('A 6-digit reset code has been sent to your email.', 'success')
-                session['reset_email'] = email  # Store in session for the next step
-                cur.close()
-                return redirect(url_for('auth.reset_password'))
             except Exception as e:
                 print(f"[EMAIL ERROR] Could not send reset email: {e}")
-                flash('Error sending email. Please try again later.', 'danger')
-        else:
-            # Don't reveal if email exists, but still redirect to reset password
-            # to prevent user enumeration (though code won't be sent)
-            flash('If that email is registered, a reset code has been sent.', 'info')
+                # We don't flash error here to keep the flow identical
         
+        # Always flash success and redirect to reset-password to prevent user enumeration
+        flash('If that email is registered, a 6-digit reset code has been sent.', 'success')
+        session['reset_email'] = email
         cur.close()
+        return redirect(url_for('auth.reset_password'))
 
     return render_template('auth/forgot_password.html')
 

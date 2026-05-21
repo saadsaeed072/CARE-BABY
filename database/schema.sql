@@ -21,6 +21,11 @@ CREATE TABLE users (
     ) NOT NULL,
     profile_image VARCHAR(255),
     is_verified BOOLEAN DEFAULT FALSE,
+    is_email_verified BOOLEAN DEFAULT FALSE,
+    email_verification_token VARCHAR(255),
+    email_verification_sent_at TIMESTAMP NULL,
+    reset_code VARCHAR(6),
+    reset_code_expires_at TIMESTAMP NULL,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -353,3 +358,7 @@ CREATE INDEX idx_transactions_user ON transactions (user_id);
 CREATE INDEX idx_contact_messages_email ON contact_messages (email);
 
 CREATE INDEX idx_contact_messages_read ON contact_messages (is_read);
+CREATE INDEX idx_email_verification_token ON users (email_verification_token);
+
+-- Set existing admin users as verified
+UPDATE users SET is_email_verified = TRUE WHERE user_type = 'admin';

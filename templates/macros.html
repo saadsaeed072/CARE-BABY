@@ -1,0 +1,16 @@
+{% macro empty_state(icon, title, message, cta_url=None, cta_text=None, cta_icon=None) %}
+<div class="empty-state text-center py-5 animate-fadeIn">
+    <div class="empty-state-icon mb-4">
+        <div class="icon-circle bg-primary bg-opacity-10 text-primary mx-auto d-flex align-items-center justify-content-center shadow-sm" style="width: 100px; height: 100px; border-radius: 50%;">
+            <i class="bi {{ icon }}" style="font-size: 3rem;"></i>
+        </div>
+    </div>
+    <h4 class="fw-bold text-primary mb-2">{{ title }}</h4>
+    <p class="text-muted mb-4 mx-auto" style="max-width: 450px; font-size: 1.1rem;">{{ message }}</p>
+    {% if cta_url %}
+    <a href="{{ cta_url }}" class="btn btn-primary btn-lg px-5 shadow-sm">
+        {% if cta_icon %}<i class="bi {{ cta_icon }} me-2"></i>{% endif %}{{ cta_text }}
+    </a>
+    {% endif %}
+</div>
+{% endmacro %}
